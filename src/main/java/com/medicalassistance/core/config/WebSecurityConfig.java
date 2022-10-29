@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // We don't need CSRF for this example
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and().csrf().disable()
                 // dont authenticate this particular request
                 .authorizeRequests()
                 .antMatchers("/api/v1/patient/login").permitAll()
@@ -63,6 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/doctor/login").permitAll()
                 .antMatchers("/api/v1/doctor/signup").permitAll()
                 .antMatchers("/api/v1/admin/login").permitAll()
+                .antMatchers("/api/v1/patient/profile").permitAll()
+                .antMatchers("/api/v1/patient/assessment/*").access("hasRole('ROLE_PATIENT')")
+                .antMatchers("/api/v1/counselor/patients").access("hasRole('ROLE_COUNSELOR')")
+                .antMatchers("/api/v1/doctor/patients").access("hasRole('ROLE_DOCTOR')")
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().and()
                 // make sure we use stateless session; session won't be used to

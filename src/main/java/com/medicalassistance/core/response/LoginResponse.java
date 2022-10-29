@@ -3,8 +3,8 @@ package com.medicalassistance.core.response;
 public class LoginResponse {
     boolean loginSuccess;
     String accessToken;
-    String emailAddress;
     String errorMessage;
+    UserCardResponse user;
 
     public LoginResponse() {
 
@@ -12,14 +12,6 @@ public class LoginResponse {
 
     public LoginResponse(boolean loginSuccess) {
         this.loginSuccess = loginSuccess;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
     public boolean isLoginSuccess() {
@@ -55,5 +47,13 @@ public class LoginResponse {
      */
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public UserCardResponse getUser() {
+        return user;
+    }
+
+    public void setUser(UserCardResponse user) {
+        this.user = user;
     }
 }

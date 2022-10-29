@@ -3,22 +3,20 @@ package com.medicalassistance.core.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.medicalassistance.core.common.AuthorityName;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.Set;
 
-@Document("patients")
+@Document("users")
 public class User {
-
     @Id
     private String userId;
 
     private String fullName;
 
-    private String addressLine1;
-
-    private String addressLine2;
+    private String addressLine;
 
     private String city;
 
@@ -26,12 +24,11 @@ public class User {
 
     private String country;
 
-    private String zipCode;
-
     private Date dateOfBirth;
 
     private String phoneNumber;
 
+    @Indexed(unique = true)
     private String emailAddress;
 
     @JsonIgnore
@@ -41,6 +38,10 @@ public class User {
     private Date lastPasswordResetDate;
 
     private Set<AuthorityName> authorities;
+
+    private Date createdAt;
+
+    private Date modifiedAt;
 
     public String getUserId() {
         return userId;
@@ -58,20 +59,12 @@ public class User {
         this.fullName = fullName;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public String getAddressLine() {
+        return addressLine;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
-    }
-
-    public String getAddressLine2() {
-        return addressLine2;
-    }
-
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
     }
 
     public String getCity() {
@@ -96,14 +89,6 @@ public class User {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
     }
 
     public Date getDateOfBirth() {
@@ -152,5 +137,21 @@ public class User {
 
     public void setAuthorities(Set<AuthorityName> authorities) {
         this.authorities = authorities;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

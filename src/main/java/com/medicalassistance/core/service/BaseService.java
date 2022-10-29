@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class BaseService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserMapper patientMapper;
+    private UserMapper userMapper;
 
     public LoginResponse login(LoginRequest request, AuthorityName authorityName) {
         if (request == null) {
@@ -49,10 +50,27 @@ public class BaseService {
     }
 
     public LoginResponse signUp(UserRequest userRequest, AuthorityName authorityName) {
-        User patient = patientMapper.fromPatientRequest(userRequest);
-        if (patient == null || patient.getEmailAddress() == null || patient.getPassword() == null) {
+        User patient = userMapper.fromPatientRequest(userRequest);
+        if (patient == null) {
             return this.createErrorLoginResponse("Invalid user request");
+        } else if (patient.getEmailAddress() == null) {
+            return this.createErrorLoginResponse("Invalid email address");
+        } else if (patient.getPassword() == null) {
+            return this.createErrorLoginResponse("Invalid user password");
+        } else if (patient.getDateOfBirth() == null) {
+            return this.createErrorLoginResponse("Invalid date of birth");
+        } else if (patient.getFullName() == null) {
+            return this.createErrorLoginResponse("Invalid full name");
+        } else if (patient.getCity() == null) {
+            return this.createErrorLoginResponse("Invalid city");
+        } else if (patient.getCountry() == null) {
+            return this.createErrorLoginResponse("Invalid country");
+        } else if (patient.getPhoneNumber() == null) {
+            return this.createErrorLoginResponse("Invalid phone number");
+        } else if (patient.getProvince() == null) {
+            return this.createErrorLoginResponse("Invalid province");
         }
+
         try {
             this.checkIfEmailIsTakenWithException(patient.getEmailAddress());
         } catch (AlreadyExistsException e) {
@@ -62,6 +80,9 @@ public class BaseService {
         Set<AuthorityName> authorities = new HashSet<>();
         authorities.add(authorityName);
         patient.setAuthorities(authorities);
+        patient.setCreatedAt(new Date());
+        patient.setModifiedAt(new Date());
+        patient.setLastPasswordResetDate(new Date());
 
         // For encrypting the password
         String encPassword = EncryptionUtil.encryptPassword(patient.getPassword());
@@ -85,7 +106,7 @@ public class BaseService {
 
     public LoginResponse createSuccessLoginResponse(User savedUser) {
         LoginResponse response = new LoginResponse();
-        response.setEmailAddress(savedUser.getEmailAddress());
+        response.setUser(userMapper.toUserCardResponse(savedUser));
         response.setLoginSuccess(true);
         JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(savedUser.getEmailAddress());
         response.setAccessToken(jwtTokenUtil.generateToken(userDetails));

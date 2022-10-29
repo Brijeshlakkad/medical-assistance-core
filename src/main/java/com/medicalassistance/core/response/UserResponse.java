@@ -1,13 +1,9 @@
-package com.medicalassistance.core.request;
+package com.medicalassistance.core.response;
 
-import java.util.Date;
-
-public class UserRequest {
+public class UserResponse {
     private String fullName;
 
-    private String addressLine1;
-
-    private String addressLine2;
+    private String addressLine;
 
     private String city;
 
@@ -15,13 +11,11 @@ public class UserRequest {
 
     private String country;
 
-    private Date dateOfBirth;
-
     private String phoneNumber;
 
     private String emailAddress;
 
-    private String password;
+    private Integer age;
 
     public String getFullName() {
         return fullName;
@@ -31,20 +25,12 @@ public class UserRequest {
         this.fullName = fullName;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public String getAddressLine() {
+        return addressLine;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
-    }
-
-    public String getAddressLine2() {
-        return addressLine2;
-    }
-
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
     }
 
     public String getCity() {
@@ -71,14 +57,6 @@ public class UserRequest {
         this.country = country;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -95,11 +73,11 @@ public class UserRequest {
         this.emailAddress = emailAddress;
     }
 
-    public String getPassword() {
-        return password;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }
