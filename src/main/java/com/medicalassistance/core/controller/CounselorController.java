@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@CrossOrigin
 @RequestMapping(value = "/api/v1/counselor")
 public class CounselorController {
     @Autowired
