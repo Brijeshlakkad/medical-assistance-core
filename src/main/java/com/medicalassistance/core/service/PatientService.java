@@ -3,7 +3,6 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.ActivePatient;
 import com.medicalassistance.core.entity.AssessmentResult;
-import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.ActivePatientRepository;
 import com.medicalassistance.core.repository.AssessmentResultRepository;
@@ -38,7 +37,7 @@ public class PatientService {
         for (ActivePatient activePatient : activePatients) {
             PatientRecordCardResponse cardResponse = new PatientRecordCardResponse();
             cardResponse.setPatientRecordId(activePatient.getActivePatientId());
-            cardResponse.setPatientResponse(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getActivePatientId())));
+            cardResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientRecord().getPatientId())));
             cardResponse.setAssessmentCreatedAt(activePatient.getCreatedAt());
             response.addPatientRecordCardResponse(cardResponse);
         }

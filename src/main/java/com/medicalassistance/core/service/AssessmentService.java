@@ -63,6 +63,7 @@ public class AssessmentService {
         // store the patient record as an active patient
         ActivePatient activePatient = new ActivePatient();
         activePatient.setPatientRecord(new PatientRecord(result.getAssessmentResultId(), userId));
+        activePatient.setCreatedAt(assessmentResult.getCreatedAt());
         activePatientRepository.save(activePatient);
     }
 }
