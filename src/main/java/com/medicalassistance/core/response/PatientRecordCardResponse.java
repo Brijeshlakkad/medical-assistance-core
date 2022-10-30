@@ -5,7 +5,7 @@ import java.util.Date;
 public class PatientRecordCardResponse {
     String patientRecordId;
     UserCardResponse patient;
-    Date assessmentCreatedAt;
+    Long assessmentCreatedAt;
 
     public String getPatientRecordId() {
         return patientRecordId;
@@ -23,11 +23,11 @@ public class PatientRecordCardResponse {
         this.patient = patient;
     }
 
-    public Date getAssessmentCreatedAt() {
+    public Long getAssessmentCreatedAt() {
         return assessmentCreatedAt;
     }
 
     public void setAssessmentCreatedAt(Date assessmentCreatedAt) {
-        this.assessmentCreatedAt = assessmentCreatedAt;
+        this.assessmentCreatedAt = assessmentCreatedAt.getTime();
     }
 }
