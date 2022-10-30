@@ -1,10 +1,15 @@
 package com.medicalassistance.core.config;
 
 import com.medicalassistance.core.security.JwtAuthenticationEntryPoint;
-import com.medicalassistance.core.security.JwtRequestFilter;
+import com.medicalassistance.core.security.JwtAuthorizationTokenFilter;
+import com.medicalassistance.core.security.JwtTokenUtil;
+import com.medicalassistance.core.security.JwtUserDetailService;
+import com.medicalassistance.core.util.CaseInsensitiveRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -12,7 +17,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,15 +25,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private UserDetailsService jwtUserDetailsService;
+    private JwtUserDetailService jwtUserDetailsService;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    @Value("${jwt.header}")
+    private String tokenHeader;
+
+    @Value("${jwt.cookieName}")
+    private String tokenCookieName;
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -53,28 +62,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // We don't need CSRF for this example
-        httpSecurity.cors().and().csrf().disable()
-                // dont authenticate this particular request
-                .authorizeRequests()
-                .antMatchers("/api/v1/patient/login").permitAll()
-                .antMatchers("/api/v1/patient/signup").permitAll()
-                .antMatchers("/api/v1/counselor/login").permitAll()
-                .antMatchers("/api/v1/counselor/signup").permitAll()
-                .antMatchers("/api/v1/doctor/login").permitAll()
-                .antMatchers("/api/v1/doctor/signup").permitAll()
-                .antMatchers("/api/v1/admin/login").permitAll()
-                .antMatchers("/api/v1/patient/profile").permitAll()
-                .antMatchers("/api/v1/patient/assessment/*").access("hasRole('ROLE_PATIENT')")
-                .antMatchers("/api/v1/counselor/patients").access("hasRole('ROLE_COUNSELOR')")
-                .antMatchers("/api/v1/doctor/patients").access("hasRole('ROLE_DOCTOR')")
-                // all other requests need to be authenticated
-                .anyRequest().authenticated().and()
-                // make sure we use stateless session; session won't be used to
-                // store user's state.
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/patient/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/patient/signup").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/counselor/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/counselor/signup").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/doctor/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/doctor/signup").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/patient/assessment/*").access("hasRole('ROLE_PATIENT')")
+                .antMatchers(HttpMethod.POST, "/api/v1/patient/assessment/*").access("hasRole('ROLE_PATIENT')")
+                .antMatchers(HttpMethod.GET, "/api/v1/counselor/patients").access("hasRole('ROLE_COUNSELOR')")
+                .antMatchers(HttpMethod.GET, "/api/v1/counselor/patient/*").access("hasRole('ROLE_COUNSELOR')")
+                .antMatchers(HttpMethod.GET, "/api/v1/doctor/patients").access("hasRole('ROLE_DOCTOR')")
+                .antMatchers(HttpMethod.GET, "/api/v1/doctor/patient/*").access("hasRole('ROLE_DOCTOR')");
 
-        // Add a filter to validate the tokens with every request
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        // Custom JWT based security filter
+        JwtAuthorizationTokenFilter authenticationTokenFilter = new JwtAuthorizationTokenFilter(userDetailsService(),
+                jwtTokenUtil, tokenHeader, tokenCookieName);
+        httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        CaseInsensitiveRequestFilter caseInsensitiveRequestFilter = new CaseInsensitiveRequestFilter();
+        httpSecurity.addFilterAfter(caseInsensitiveRequestFilter, JwtAuthorizationTokenFilter.class);
+        httpSecurity.headers().cacheControl();
     }
 }
