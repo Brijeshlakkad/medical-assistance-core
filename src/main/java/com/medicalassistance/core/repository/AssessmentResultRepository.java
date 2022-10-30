@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface AssessmentResultRepository extends MongoRepository<AssessmentResult, String> {
-    AssessmentResult findByAssessmentId(String assessmentId);
+    AssessmentResult findByAssessmentResultId(String assessmentResultId);
 
     List<AssessmentResult> findByPatientId(String patientId);
 }

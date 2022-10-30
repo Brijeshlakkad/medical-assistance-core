@@ -53,7 +53,7 @@ public class PatientService {
         response.setCreatedAt(activePatient.getCreatedAt());
         AssessmentResultResponse assessmentResultResponse = new AssessmentResultResponse();
 
-        AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentId(activePatient.getPatientRecord().getAssessmentResultId());
+        AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(activePatient.getPatientRecord().getAssessmentResultId());
         assessmentResultResponse.setAttemptedQuestions(assessmentResult.getAttemptedQuestions());
         response.setAssessmentResult(assessmentResultResponse);
         return response;
