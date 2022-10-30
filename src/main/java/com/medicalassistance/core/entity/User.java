@@ -34,6 +34,8 @@ public class User {
     @JsonIgnore
     private String password;
 
+    private String registrationNumber;
+
     @JsonIgnore
     private Date lastPasswordResetDate;
 
@@ -121,6 +123,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
     }
 
     public Date getLastPasswordResetDate() {

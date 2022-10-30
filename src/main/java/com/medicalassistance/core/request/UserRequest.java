@@ -23,6 +23,8 @@ public class UserRequest {
 
     private String password;
 
+    private String registrationNumber;
+
     public String getFullName() {
         return fullName;
     }
@@ -101,5 +103,13 @@ public class UserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
     }
 }

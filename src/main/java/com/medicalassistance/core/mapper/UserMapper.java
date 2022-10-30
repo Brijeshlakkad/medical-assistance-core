@@ -12,17 +12,18 @@ import java.util.Date;
 @Component
 public class UserMapper {
     public User fromPatientRequest(UserRequest userRequest) {
-        User patient = new User();
-        patient.setFullName(userRequest.getFullName());
-        patient.setEmailAddress(userRequest.getEmailAddress());
-        patient.setPassword(userRequest.getPassword());
-        patient.setAddressLine(userRequest.getAddressLine1());
-        patient.setCity(userRequest.getCity());
-        patient.setProvince(userRequest.getProvince());
-        patient.setCountry(userRequest.getCountry());
-        patient.setDateOfBirth(userRequest.getDateOfBirth());
-        patient.setPhoneNumber(userRequest.getPhoneNumber());
-        return patient;
+        User user = new User();
+        user.setFullName(userRequest.getFullName());
+        user.setEmailAddress(userRequest.getEmailAddress());
+        user.setPassword(userRequest.getPassword());
+        user.setAddressLine(userRequest.getAddressLine1());
+        user.setCity(userRequest.getCity());
+        user.setProvince(userRequest.getProvince());
+        user.setCountry(userRequest.getCountry());
+        user.setDateOfBirth(userRequest.getDateOfBirth());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
+        user.setRegistrationNumber(userRequest.getRegistrationNumber());
+        return user;
     }
 
     public UserCardResponse toUserCardResponse(User user) {
