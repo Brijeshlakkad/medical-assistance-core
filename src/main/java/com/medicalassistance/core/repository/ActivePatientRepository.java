@@ -9,4 +9,6 @@ public interface ActivePatientRepository extends MongoRepository<ActivePatient, 
     List<ActivePatient> findAll();
 
     ActivePatient findByActivePatientId(String activePatientId);
+
+    boolean existsByPatientRecord_PatientId(String patientId);
 }

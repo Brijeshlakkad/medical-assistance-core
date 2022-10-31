@@ -2,6 +2,7 @@ package com.medicalassistance.core.service;
 
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.*;
+import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.repository.ActivePatientRepository;
 import com.medicalassistance.core.repository.AssessmentRepository;
 import com.medicalassistance.core.repository.AssessmentResultRepository;
@@ -45,6 +46,10 @@ public class AssessmentService {
 
     public void storeAssessmentResult(String assessmentId, AssessmentResultRequest assessmentRequest) {
         String userId = userCommonService.getUser().getUserId();
+
+        if (activePatientRepository.existsByPatientRecord_PatientId(userId)) {
+            throw new AlreadyExistsException("You already have an active patient file with us!");
+        }
 
         AssessmentResult assessmentResult = new AssessmentResult();
 

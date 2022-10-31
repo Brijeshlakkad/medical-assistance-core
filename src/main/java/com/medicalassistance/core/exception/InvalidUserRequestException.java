@@ -4,16 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidUserRequest extends RuntimeException {
-    public InvalidUserRequest() {
+public class InvalidUserRequestException extends RuntimeException {
+    public InvalidUserRequestException() {
         super();
     }
 
-    public InvalidUserRequest(String message) {
+    public InvalidUserRequestException(String message) {
         super(message);
     }
 
-    public InvalidUserRequest(String message, Throwable cause) {
+    public InvalidUserRequestException(String message, Throwable cause) {
         super(message, cause);
     }
 }
