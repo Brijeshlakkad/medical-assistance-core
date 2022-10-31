@@ -3,14 +3,17 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.ActivePatient;
 import com.medicalassistance.core.entity.AssessmentResult;
+import com.medicalassistance.core.entity.AttemptedQuestion;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.ActivePatientRepository;
 import com.medicalassistance.core.repository.AssessmentResultRepository;
+import com.medicalassistance.core.repository.BooleanQuestionRepository;
 import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +32,9 @@ public class PatientService {
 
     @Autowired
     UserCommonService userCommonService;
+
+    @Autowired
+    BooleanQuestionRepository booleanQuestionRepository;
 
     public PatientRecordCardListResponse getActivePatients() {
         List<ActivePatient> activePatients = activePatientRepository.findAll();
@@ -51,10 +57,17 @@ public class PatientService {
         response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientRecord().getPatientId())));
         response.setRecordId(activePatientId);
         response.setCreatedAt(activePatient.getCreatedAt());
-        AssessmentResultResponse assessmentResultResponse = new AssessmentResultResponse();
 
+        AssessmentResultResponse assessmentResultResponse = new AssessmentResultResponse();
         AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(activePatient.getPatientRecord().getAssessmentResultId());
-        assessmentResultResponse.setAttemptedQuestions(assessmentResult.getAttemptedQuestions());
+        List<AttemptedQuestionResponse> attemptedQuestionResponses = new ArrayList<>();
+        for (AttemptedQuestion attemptedQuestion : assessmentResult.getAttemptedQuestions()) {
+            attemptedQuestionResponses.add(new AttemptedQuestionResponse(
+                    booleanQuestionRepository.findByQuestionId(attemptedQuestion.getQuestionId()).getQuestion(),
+                    attemptedQuestion.getAnswer()
+            ));
+        }
+        assessmentResultResponse.setAttemptedQuestions(attemptedQuestionResponses);
         response.setAssessmentResult(assessmentResultResponse);
         return response;
     }

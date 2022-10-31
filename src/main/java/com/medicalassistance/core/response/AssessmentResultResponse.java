@@ -1,21 +1,19 @@
 package com.medicalassistance.core.response;
 
-import com.medicalassistance.core.entity.AttemptedQuestion;
-
 import java.util.List;
 
 public class AssessmentResultResponse {
-    private List<AttemptedQuestion> attemptedQuestions;
+    private List<AttemptedQuestionResponse> attemptedQuestions;
 
-    public List<AttemptedQuestion> getAttemptedQuestions() {
+    public List<AttemptedQuestionResponse> getAttemptedQuestions() {
         return attemptedQuestions;
     }
 
-    public void setAttemptedQuestions(List<AttemptedQuestion> attemptedQuestions) {
+    public void setAttemptedQuestions(List<AttemptedQuestionResponse> attemptedQuestions) {
         this.attemptedQuestions = attemptedQuestions;
     }
 
-    public boolean addAttemptedQuestion(AttemptedQuestion attemptedQuestion) {
+    public boolean addAttemptedQuestion(AttemptedQuestionResponse attemptedQuestion) {
         return this.attemptedQuestions.add(attemptedQuestion);
     }
 }
