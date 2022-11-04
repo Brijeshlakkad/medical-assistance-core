@@ -89,13 +89,10 @@ public class ExceptionHandlerControllerAdvice {
     public @ResponseBody
     final ExceptionResponse handleAllExceptions(final Exception exception,
                                                 final WebRequest request, final HttpServletRequest httpServletRequest) {
-        List<String> details = new ArrayList<>();
-        details.add(exception.getLocalizedMessage());
         exception.printStackTrace();
         ExceptionResponse error = new ExceptionResponse();
         error.setErrorMessage(exception.getMessage());
         error.callerURL(httpServletRequest.getRequestURI());
         return error;
-
     }
 }

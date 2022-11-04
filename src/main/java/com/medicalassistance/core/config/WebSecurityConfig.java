@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/counselor/patients").access("hasRole('ROLE_COUNSELOR')")
                 .antMatchers(HttpMethod.GET, "/api/v1/counselor/patient/*").access("hasRole('ROLE_COUNSELOR')")
                 .antMatchers(HttpMethod.GET, "/api/v1/doctor/patients").access("hasRole('ROLE_DOCTOR')")
-                .antMatchers(HttpMethod.GET, "/api/v1/doctor/patient/*").access("hasRole('ROLE_DOCTOR')");
+                .antMatchers(HttpMethod.GET, "/api/v1/doctor/patient/**/*").access("hasRole('ROLE_DOCTOR')");
 
         // Custom JWT based security filter
         JwtAuthorizationTokenFilter authenticationTokenFilter = new JwtAuthorizationTokenFilter(userDetailsService(),
