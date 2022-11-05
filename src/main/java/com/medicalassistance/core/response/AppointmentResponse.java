@@ -1,10 +1,8 @@
 package com.medicalassistance.core.response;
 
-import com.medicalassistance.core.entity.User;
-
 import java.util.Date;
 
-public class DoctorAppointmentResponse {
+public class AppointmentResponse {
     private String appointmentId;
 
     private UserCardResponse patient;

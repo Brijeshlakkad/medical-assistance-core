@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Appointments made by doctor for the patients.
  */
-@Document("doctor_appointment")
+@Document("doctor_appointments")
 public class DoctorAppointment {
     @Id
     private String appointmentId;

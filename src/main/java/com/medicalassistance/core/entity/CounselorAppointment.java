@@ -8,12 +8,12 @@ import java.util.Date;
 /**
  * Appointments made by counselor for the patients.
  */
-@Document("counselor")
+@Document("counselor_appointments")
 public class CounselorAppointment {
     @Id
     private String appointmentId;
 
-    private String doctorId;
+    private String counselorId;
 
     private String patientId;
 
@@ -29,12 +29,12 @@ public class CounselorAppointment {
         this.appointmentId = appointmentId;
     }
 
-    public String getDoctorId() {
-        return doctorId;
+    public String getCounselorId() {
+        return counselorId;
     }
 
-    public void setDoctorId(String doctorId) {
-        this.doctorId = doctorId;
+    public void setCounselorId(String counselorId) {
+        this.counselorId = counselorId;
     }
 
     public String getPatientId() {

@@ -4,7 +4,7 @@ import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
-import com.medicalassistance.core.response.DoctorAppointmentResponse;
+import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.LoginResponse;
 import com.medicalassistance.core.response.PatientRecordCardListResponse;
 import com.medicalassistance.core.response.PatientRecordResponse;
@@ -57,8 +57,8 @@ public class DoctorController {
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.GET)
-    public Page<DoctorAppointmentResponse> getDoctorAppointments(@RequestParam(defaultValue = "0") Integer page,
-                                                                 @RequestParam(defaultValue = "10") Integer size) {
+    public Page<AppointmentResponse> getDoctorAppointments(@RequestParam(defaultValue = "0") Integer page,
+                                                           @RequestParam(defaultValue = "10") Integer size) {
         Pageable paging = PageRequest.of(page, size);
         return doctorService.getDoctorAppointments(paging);
     }
