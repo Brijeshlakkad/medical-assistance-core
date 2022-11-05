@@ -2,22 +2,20 @@ package com.medicalassistance.core.entity;
 
 import org.springframework.data.annotation.Id;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 /**
  * Base class for CounselorAppointment and DoctorAppointment that shares the common features.
  */
-public class Appointment {
+public class Appointment extends DateDomainObject {
     @Id
     private String appointmentId;
 
     private String activePatientId;
 
-    private Date startDateTime;
+    private ZonedDateTime startDateTime;
 
-    private Date endDateTime;
-
-    private Date createdAt;
+    private ZonedDateTime endDateTime;
 
     public String getAppointmentId() {
         return appointmentId;
@@ -35,27 +33,19 @@ public class Appointment {
         this.activePatientId = activePatientId;
     }
 
-    public Date getStartDateTime() {
+    public ZonedDateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(ZonedDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getEndDateTime() {
+    public ZonedDateTime getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(Date endDateTime) {
+    public void setEndDateTime(ZonedDateTime endDateTime) {
         this.endDateTime = endDateTime;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 }

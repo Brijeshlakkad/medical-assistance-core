@@ -3,11 +3,10 @@ package com.medicalassistance.core.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 import java.util.List;
 
 @Document("assessment_results")
-public class AssessmentResult {
+public class AssessmentResult extends DateDomainObject {
     @Id
     private String assessmentResultId;
 
@@ -16,8 +15,6 @@ public class AssessmentResult {
     private String patientId;
 
     private List<AttemptedQuestion> attemptedQuestions;
-
-    private Date createdAt;
 
     public String getAssessmentResultId() {
         return assessmentResultId;
@@ -49,13 +46,5 @@ public class AssessmentResult {
 
     public void setAttemptedQuestions(List<AttemptedQuestion> attemptedQuestions) {
         this.attemptedQuestions = attemptedQuestions;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 }

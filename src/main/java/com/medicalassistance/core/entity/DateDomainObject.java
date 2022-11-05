@@ -1,37 +1,37 @@
 package com.medicalassistance.core.entity;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 /**
  * Base class to store created and updated date and time of the document.
  */
 public class DateDomainObject {
-    private Date createdAt;
+    private ZonedDateTime createdAt;
 
-    private Date updatedAt;
+    private ZonedDateTime updatedAt;
 
     public DateDomainObject() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = ZonedDateTime.now();
+        this.updatedAt = ZonedDateTime.now();
     }
 
-    public Date getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(ZonedDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public ZonedDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(ZonedDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     public void update() {
-        this.updatedAt = new Date();
+        this.updatedAt = ZonedDateTime.now();
     }
 }

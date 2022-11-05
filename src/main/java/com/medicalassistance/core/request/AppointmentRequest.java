@@ -1,13 +1,13 @@
 package com.medicalassistance.core.request;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class AppointmentRequest {
     private String activePatientId;
 
-    private Date startDateTime;
+    private ZonedDateTime startDateTime;
 
-    private Date endDateTime;
+    private ZonedDateTime endDateTime;
 
     public String getActivePatientId() {
         return activePatientId;
@@ -17,19 +17,19 @@ public class AppointmentRequest {
         this.activePatientId = activePatientId;
     }
 
-    public Date getStartDateTime() {
+    public ZonedDateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(ZonedDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getEndDateTime() {
+    public ZonedDateTime getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(Date endDateTime) {
+    public void setEndDateTime(ZonedDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
 }

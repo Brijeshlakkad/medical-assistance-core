@@ -1,11 +1,11 @@
 package com.medicalassistance.core.response;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class PatientRecordCardResponse {
     String patientRecordId;
     UserCardResponse patient;
-    Long assessmentCreatedAt;
+    ZonedDateTime assessmentCreatedAt;
 
     public String getPatientRecordId() {
         return patientRecordId;
@@ -23,11 +23,11 @@ public class PatientRecordCardResponse {
         this.patient = patient;
     }
 
-    public Long getAssessmentCreatedAt() {
+    public ZonedDateTime getAssessmentCreatedAt() {
         return assessmentCreatedAt;
     }
 
-    public void setAssessmentCreatedAt(Date assessmentCreatedAt) {
-        this.assessmentCreatedAt = assessmentCreatedAt.getTime();
+    public void setAssessmentCreatedAt(ZonedDateTime assessmentCreatedAt) {
+        this.assessmentCreatedAt = assessmentCreatedAt;
     }
 }

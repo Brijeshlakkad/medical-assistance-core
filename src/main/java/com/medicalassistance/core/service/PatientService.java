@@ -43,7 +43,7 @@ public class PatientService {
         for (ActivePatient activePatient : activePatients) {
             PatientRecordCardResponse cardResponse = new PatientRecordCardResponse();
             cardResponse.setPatientRecordId(activePatient.getActivePatientId());
-            cardResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientRecord().getPatientId())));
+            cardResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
             cardResponse.setAssessmentCreatedAt(activePatient.getCreatedAt());
             response.addPatientRecordCardResponse(cardResponse);
         }
@@ -54,12 +54,12 @@ public class PatientService {
     public PatientRecordResponse getActivePatient(String activePatientId) {
         ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
         PatientRecordResponse response = new PatientRecordResponse();
-        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientRecord().getPatientId())));
+        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
         response.setRecordId(activePatientId);
         response.setCreatedAt(activePatient.getCreatedAt());
 
         AssessmentResultResponse assessmentResultResponse = new AssessmentResultResponse();
-        AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(activePatient.getPatientRecord().getAssessmentResultId());
+        AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(activePatient.getAssessmentResultId());
         List<AttemptedQuestionResponse> attemptedQuestionResponses = new ArrayList<>();
         for (AttemptedQuestion attemptedQuestion : assessmentResult.getAttemptedQuestions()) {
             attemptedQuestionResponses.add(new AttemptedQuestionResponse(
@@ -71,4 +71,5 @@ public class PatientService {
         response.setAssessmentResult(assessmentResultResponse);
         return response;
     }
+
 }

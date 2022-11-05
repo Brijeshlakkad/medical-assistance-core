@@ -1,6 +1,5 @@
 package com.medicalassistance.core.entity;
 
-import com.medicalassistance.core.common.ActivePatientRecordStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,11 +13,12 @@ public class ActivePatient extends DateDomainObject {
     private String activePatientId;
 
     @Indexed(unique = true)
-    private PatientRecord patientRecord;
+    private String patientId;
 
-    private ActivePatientRecordStatus status = ActivePatientRecordStatus.COUNSELOR_IN_PROGRESS;
+    private String assessmentResultId;
 
-    private String relatedKey;
+    @Indexed(unique = true)
+    private String patientRecordId;
 
     public String getActivePatientId() {
         return activePatientId;
@@ -28,27 +28,27 @@ public class ActivePatient extends DateDomainObject {
         this.activePatientId = activePatientId;
     }
 
-    public PatientRecord getPatientRecord() {
-        return patientRecord;
+    public String getPatientId() {
+        return patientId;
     }
 
-    public void setPatientRecord(PatientRecord patientRecord) {
-        this.patientRecord = patientRecord;
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
-    public ActivePatientRecordStatus getStatus() {
-        return status;
+    public String getAssessmentResultId() {
+        return assessmentResultId;
     }
 
-    public void setStatus(ActivePatientRecordStatus status) {
-        this.status = status;
+    public void setAssessmentResultId(String assessmentResultId) {
+        this.assessmentResultId = assessmentResultId;
     }
 
-    public String getRelatedKey() {
-        return relatedKey;
+    public String getPatientRecordId() {
+        return patientRecordId;
     }
 
-    public void setRelatedKey(String relatedKey) {
-        this.relatedKey = relatedKey;
+    public void setPatientRecordId(String patientRecordId) {
+        this.patientRecordId = patientRecordId;
     }
 }

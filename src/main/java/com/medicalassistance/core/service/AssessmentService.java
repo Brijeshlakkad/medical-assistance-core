@@ -1,13 +1,11 @@
 package com.medicalassistance.core.service;
 
-import com.medicalassistance.core.common.ActivePatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.*;
+import com.medicalassistance.core.entity.Assessment;
+import com.medicalassistance.core.entity.AssessmentResult;
+import com.medicalassistance.core.entity.AttemptedQuestion;
 import com.medicalassistance.core.exception.AlreadyExistsException;
-import com.medicalassistance.core.repository.ActivePatientRepository;
-import com.medicalassistance.core.repository.AssessmentRepository;
-import com.medicalassistance.core.repository.AssessmentResultRepository;
-import com.medicalassistance.core.repository.BooleanQuestionRepository;
+import com.medicalassistance.core.repository.*;
 import com.medicalassistance.core.request.AssessmentResultRequest;
 import com.medicalassistance.core.request.AttemptedQuestionRequest;
 import com.medicalassistance.core.response.AssessmentResponse;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,6 +33,12 @@ public class AssessmentService {
     @Autowired
     BooleanQuestionRepository booleanQuestionRepository;
 
+    @Autowired
+    PatientRecordRepository patientRecordRepository;
+
+    @Autowired
+    PatientRecordService patientRecordService;
+
     public AssessmentResponse getAssessment(String assessmentId) {
         AssessmentResponse response = new AssessmentResponse();
         Assessment assessment = assessmentRepository.findByAssessmentId(assessmentId);
@@ -48,7 +51,7 @@ public class AssessmentService {
     public void storeAssessmentResult(String assessmentId, AssessmentResultRequest assessmentRequest) {
         String userId = userCommonService.getUser().getUserId();
 
-        if (activePatientRepository.existsByPatientRecord_PatientId(userId)) {
+        if (activePatientRepository.existsByPatientId(userId)) {
             throw new AlreadyExistsException("You already have an active patient file with us!");
         }
 
@@ -62,14 +65,10 @@ public class AssessmentService {
             attemptedQuestions.add(new AttemptedQuestion(questionRequest.getQuestionId(), questionRequest.getAnswer()));
         }
         assessmentResult.setPatientId(userId);
-        assessmentResult.setCreatedAt(new Date());
         assessmentResult.setAttemptedQuestions(attemptedQuestions);
-        AssessmentResult result = assessmentResultRepository.save(assessmentResult);
+        assessmentResult = assessmentResultRepository.save(assessmentResult);
 
-        // store the patient record as an active patient
-        ActivePatient activePatient = new ActivePatient();
-        activePatient.setPatientRecord(new PatientRecord(result.getAssessmentResultId(), userId));
-        activePatient.setStatus(ActivePatientRecordStatus.COUNSELOR_IN_PROGRESS);
-        activePatientRepository.save(activePatient);
+        // create patient record and active patient record.
+        patientRecordService.afterAssessment(assessmentResult);
     }
 }
