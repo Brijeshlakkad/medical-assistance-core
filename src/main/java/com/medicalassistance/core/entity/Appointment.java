@@ -11,7 +11,7 @@ public class Appointment {
     @Id
     private String appointmentId;
 
-    private String patientId;
+    private String activePatientId;
 
     private Date startDateTime;
 
@@ -27,12 +27,12 @@ public class Appointment {
         this.appointmentId = appointmentId;
     }
 
-    public String getPatientId() {
-        return patientId;
+    public String getActivePatientId() {
+        return activePatientId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setActivePatientId(String activePatientId) {
+        this.activePatientId = activePatientId;
     }
 
     public Date getStartDateTime() {

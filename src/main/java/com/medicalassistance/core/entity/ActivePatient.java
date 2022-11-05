@@ -1,23 +1,24 @@
 package com.medicalassistance.core.entity;
 
+import com.medicalassistance.core.common.ActivePatientRecordStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Date;
 
 /**
  * Contains patients that has completed their assessment.
  */
 @Document("active_patients")
-public class ActivePatient {
+public class ActivePatient extends DateDomainObject {
     @Id
     private String activePatientId;
 
     @Indexed(unique = true)
     private PatientRecord patientRecord;
 
-    private Date createdAt;
+    private ActivePatientRecordStatus status = ActivePatientRecordStatus.COUNSELOR_IN_PROGRESS;
+
+    private String relatedKey;
 
     public String getActivePatientId() {
         return activePatientId;
@@ -35,11 +36,19 @@ public class ActivePatient {
         this.patientRecord = patientRecord;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public ActivePatientRecordStatus getStatus() {
+        return status;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setStatus(ActivePatientRecordStatus status) {
+        this.status = status;
+    }
+
+    public String getRelatedKey() {
+        return relatedKey;
+    }
+
+    public void setRelatedKey(String relatedKey) {
+        this.relatedKey = relatedKey;
     }
 }

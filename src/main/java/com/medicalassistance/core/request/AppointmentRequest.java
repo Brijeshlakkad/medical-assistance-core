@@ -3,18 +3,18 @@ package com.medicalassistance.core.request;
 import java.util.Date;
 
 public class AppointmentRequest {
-    private String patientId;
+    private String activePatientId;
 
     private Date startDateTime;
 
     private Date endDateTime;
 
-    public String getPatientId() {
-        return patientId;
+    public String getActivePatientId() {
+        return activePatientId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setActivePatientId(String activePatientId) {
+        this.activePatientId = activePatientId;
     }
 
     public Date getStartDateTime() {

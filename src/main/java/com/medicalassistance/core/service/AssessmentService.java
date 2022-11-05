@@ -1,5 +1,6 @@
 package com.medicalassistance.core.service;
 
+import com.medicalassistance.core.common.ActivePatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.exception.AlreadyExistsException;
@@ -68,7 +69,7 @@ public class AssessmentService {
         // store the patient record as an active patient
         ActivePatient activePatient = new ActivePatient();
         activePatient.setPatientRecord(new PatientRecord(result.getAssessmentResultId(), userId));
-        activePatient.setCreatedAt(assessmentResult.getCreatedAt());
+        activePatient.setStatus(ActivePatientRecordStatus.COUNSELOR_IN_PROGRESS);
         activePatientRepository.save(activePatient);
     }
 }
