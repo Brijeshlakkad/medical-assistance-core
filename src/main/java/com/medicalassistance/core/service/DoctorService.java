@@ -42,7 +42,7 @@ public class DoctorService {
     PatientRecordService patientRecordService;
 
     public void storeDoctorAppointment(AppointmentRequest appointmentRequest) {
-        if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= (new Date()).getTime() ||
+        if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= ((new Date()).getTime() / 1000) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
                 appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())
         ) {
