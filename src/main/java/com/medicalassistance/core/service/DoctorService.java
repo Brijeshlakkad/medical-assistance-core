@@ -3,6 +3,7 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.DoctorAppointment;
 import com.medicalassistance.core.entity.User;
+import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
 import com.medicalassistance.core.repository.DoctorAppointmentRepository;
 import com.medicalassistance.core.repository.UserRepository;
@@ -21,7 +22,7 @@ public class DoctorService {
     UserCommonService userCommonService;
 
     @Autowired
-    DoctorAppointmentRepository doctorAppointmentRepository;
+    DoctorAppointmentRepository appointmentRepository;
 
     @Autowired
     AppointmentMapper appointmentMapper;
@@ -30,15 +31,23 @@ public class DoctorService {
     UserRepository userRepository;
 
     public void storeDoctorAppointment(AppointmentRequest appointmentRequest) {
+        if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(
+                appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime()) ||
+                appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEqualsOrEndDateTimeEquals(
+                        appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                        appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime())) {
+            throw new AlreadyExistsException("conflict: doctor has the reserved time slot during the provided time period");
+        }
         DoctorAppointment doctorAppointment = appointmentMapper.fromAppointmentRequestToDoctorAppointment(appointmentRequest);
 
-        doctorAppointmentRepository.save(doctorAppointment);
+        appointmentRepository.save(doctorAppointment);
     }
 
     public Page<AppointmentResponse> getDoctorAppointments(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<DoctorAppointment> pages = doctorAppointmentRepository.findByDoctorIdAndAppointmentDateGreaterThanEqual(user.getUserId(), new Date(), pageable);
+        Page<DoctorAppointment> pages = appointmentRepository.findByDoctorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), new Date(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
     }

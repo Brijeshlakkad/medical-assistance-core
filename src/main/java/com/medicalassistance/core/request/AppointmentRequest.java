@@ -5,7 +5,9 @@ import java.util.Date;
 public class AppointmentRequest {
     private String patientId;
 
-    private Date appointmentDate;
+    private Date startDateTime;
+
+    private Date endDateTime;
 
     public String getPatientId() {
         return patientId;
@@ -15,11 +17,19 @@ public class AppointmentRequest {
         this.patientId = patientId;
     }
 
-    public Date getAppointmentDate() {
-        return appointmentDate;
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
-        this.appointmentDate = appointmentDate;
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public Date getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(Date endDateTime) {
+        this.endDateTime = endDateTime;
     }
 }

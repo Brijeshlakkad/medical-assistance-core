@@ -2,6 +2,7 @@ package com.medicalassistance.core.mapper;
 
 
 import com.medicalassistance.core.common.UserCommonService;
+import com.medicalassistance.core.entity.Appointment;
 import com.medicalassistance.core.entity.CounselorAppointment;
 import com.medicalassistance.core.entity.DoctorAppointment;
 import com.medicalassistance.core.entity.User;
@@ -25,28 +26,21 @@ public class AppointmentMapper {
     @Autowired
     private UserCommonService userCommonService;
 
-    public AppointmentResponse toAppointmentResponse(DoctorAppointment doctorAppointment) {
+    public AppointmentResponse toAppointmentResponse(Appointment appointment) {
         AppointmentResponse appointmentResponse = new AppointmentResponse();
-        appointmentResponse.setAppointmentDate(doctorAppointment.getAppointmentDate());
-        appointmentResponse.setCreatedAt(doctorAppointment.getCreatedAt());
-        appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(doctorAppointment.getPatientId())));
+        appointmentResponse.setStartDateTime(appointment.getStartDateTime());
+        appointmentResponse.setEndDateTime(appointment.getEndDateTime());
+        appointmentResponse.setCreatedAt(appointment.getCreatedAt());
+        appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(appointment.getPatientId())));
         return appointmentResponse;
     }
-
-    public AppointmentResponse toAppointmentResponse(CounselorAppointment counselorAppointment) {
-        AppointmentResponse appointmentResponse = new AppointmentResponse();
-        appointmentResponse.setAppointmentDate(counselorAppointment.getAppointmentDate());
-        appointmentResponse.setCreatedAt(counselorAppointment.getCreatedAt());
-        appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(counselorAppointment.getPatientId())));
-        return appointmentResponse;
-    }
-
 
     public DoctorAppointment fromAppointmentRequestToDoctorAppointment(AppointmentRequest appointmentRequest) {
         User user = userCommonService.getUser();
         if (userRepository.existsByUserId(appointmentRequest.getPatientId())) {
             DoctorAppointment doctorAppointment = new DoctorAppointment();
-            doctorAppointment.setAppointmentDate(appointmentRequest.getAppointmentDate());
+            doctorAppointment.setStartDateTime(appointmentRequest.getStartDateTime());
+            doctorAppointment.setEndDateTime(appointmentRequest.getEndDateTime());
             doctorAppointment.setDoctorId(user.getUserId());
             doctorAppointment.setCreatedAt(new Date());
             doctorAppointment.setPatientId(appointmentRequest.getPatientId());
@@ -59,7 +53,8 @@ public class AppointmentMapper {
         User user = userCommonService.getUser();
         if (userRepository.existsByUserId(appointmentRequest.getPatientId())) {
             CounselorAppointment counselorAppointment = new CounselorAppointment();
-            counselorAppointment.setAppointmentDate(appointmentRequest.getAppointmentDate());
+            counselorAppointment.setStartDateTime(appointmentRequest.getStartDateTime());
+            counselorAppointment.setEndDateTime(appointmentRequest.getEndDateTime());
             counselorAppointment.setCounselorId(user.getUserId());
             counselorAppointment.setCreatedAt(new Date());
             counselorAppointment.setPatientId(appointmentRequest.getPatientId());

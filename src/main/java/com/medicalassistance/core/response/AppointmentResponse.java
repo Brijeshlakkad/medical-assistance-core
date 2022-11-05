@@ -7,7 +7,9 @@ public class AppointmentResponse {
 
     private UserCardResponse patient;
 
-    private Long appointmentDate;
+    private Long startDateTime;
+
+    private Long endDateTime;
 
     private Long createdAt;
 
@@ -27,12 +29,24 @@ public class AppointmentResponse {
         this.patient = patient;
     }
 
-    public Long getAppointmentDate() {
-        return appointmentDate;
+    public Long getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
-        this.appointmentDate = appointmentDate.getTime();
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime.getTime();
+    }
+
+    public Long getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(Date endDateTime) {
+        this.endDateTime = endDateTime.getTime();
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getCreatedAt() {

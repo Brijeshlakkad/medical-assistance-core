@@ -3,6 +3,7 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.CounselorAppointment;
 import com.medicalassistance.core.entity.User;
+import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
 import com.medicalassistance.core.repository.CounselorAppointmentRepository;
 import com.medicalassistance.core.repository.UserRepository;
@@ -21,7 +22,7 @@ public class CounselorService {
     UserCommonService userCommonService;
 
     @Autowired
-    CounselorAppointmentRepository counselorAppointmentRepository;
+    CounselorAppointmentRepository appointmentRepository;
 
     @Autowired
     AppointmentMapper appointmentMapper;
@@ -30,15 +31,23 @@ public class CounselorService {
     UserRepository userRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
+        if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(
+                appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime()) ||
+                appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEqualsOrEndDateTimeEquals(
+                        appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                        appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime())) {
+            throw new AlreadyExistsException("conflict: counselor has the reserved time slot during the provided time period");
+        }
         CounselorAppointment counselorAppointment = appointmentMapper.fromAppointmentRequestToCounselorAppointment(appointmentRequest);
 
-        counselorAppointmentRepository.save(counselorAppointment);
+        appointmentRepository.save(counselorAppointment);
     }
 
     public Page<AppointmentResponse> getCounselorAppointments(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<CounselorAppointment> pages = counselorAppointmentRepository.findByCounselorIdAndAppointmentDateGreaterThanEqual(user.getUserId(), new Date(), pageable);
+        Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), new Date(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
     }
