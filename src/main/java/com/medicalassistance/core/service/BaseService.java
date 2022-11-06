@@ -69,6 +69,16 @@ public class BaseService {
             return this.createErrorLoginResponse("Invalid phone number");
         } else if (patient.getProvince() == null) {
             return this.createErrorLoginResponse("Invalid province");
+        } else if (
+            // If user has ROLE_COUNSELOR or ROLE_DOCTOR, then they are required to have UNIQUE registration number
+                authorityName == AuthorityName.ROLE_COUNSELOR || authorityName == AuthorityName.ROLE_DOCTOR) {
+            if (patient.getRegistrationNumber() == null) {
+                return this.createErrorLoginResponse("invalid registration number");
+            }
+            // check if the registration number is unique
+            if (userRepository.existsByRegistrationNumber(patient.getRegistrationNumber())) {
+                return this.createErrorLoginResponse("registration number is already in use");
+            }
         }
 
         try {

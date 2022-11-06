@@ -19,4 +19,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     boolean existsByUserId(String userId);
 
     Page<DoctorCardResponse> findByAuthoritiesContains(AuthorityName authorities, Pageable pageable);
+
+    boolean existsByRegistrationNumber(String registrationNumber);
 }
