@@ -2,8 +2,6 @@ package com.medicalassistance.core.mapper;
 
 
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.converter.ZonedDateTimeReadConverter;
-import com.medicalassistance.core.converter.ZonedDateTimeWriteConverter;
 import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.repository.ActivePatientRepository;
@@ -27,18 +25,12 @@ public class AppointmentMapper {
     @Autowired
     private UserCommonService userCommonService;
 
-    @Autowired
-    ZonedDateTimeReadConverter zonedDateTimeReadConverter;
-
-    @Autowired
-    ZonedDateTimeWriteConverter zonedDateTimeWriteConverter;
-
     public AppointmentResponse toAppointmentResponse(Appointment appointment) {
         ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getActivePatientId());
         if (activePatient != null) {
             AppointmentResponse appointmentResponse = new AppointmentResponse();
-            appointmentResponse.setStartDateTime(zonedDateTimeWriteConverter.convert(appointment.getStartDateTime()));
-            appointmentResponse.setEndDateTime(zonedDateTimeWriteConverter.convert(appointment.getEndDateTime()));
+            appointmentResponse.setStartDateTime(appointment.getStartDateTime());
+            appointmentResponse.setEndDateTime(appointment.getEndDateTime());
             appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
             return appointmentResponse;
         }

@@ -1,17 +1,17 @@
 package com.medicalassistance.core.response;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class AppointmentResponse {
     private String appointmentId;
 
     private UserCardResponse patient;
 
-    private Long startDateTime;
+    private ZonedDateTime startDateTime;
 
-    private Long endDateTime;
+    private ZonedDateTime endDateTime;
 
-    private Long createdAt;
+    private ZonedDateTime createdAt;
 
     public String getAppointmentId() {
         return appointmentId;
@@ -29,31 +29,27 @@ public class AppointmentResponse {
         this.patient = patient;
     }
 
-    public Long getStartDateTime() {
+    public ZonedDateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Long startDateTime) {
+    public void setStartDateTime(ZonedDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Long getEndDateTime() {
+    public ZonedDateTime getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(Long endDateTime) {
+    public void setEndDateTime(ZonedDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
 
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Long getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt.getTime();
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

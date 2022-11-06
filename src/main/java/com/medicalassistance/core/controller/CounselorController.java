@@ -4,10 +4,7 @@ import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
-import com.medicalassistance.core.response.AppointmentResponse;
-import com.medicalassistance.core.response.LoginResponse;
-import com.medicalassistance.core.response.PatientRecordCardListResponse;
-import com.medicalassistance.core.response.PatientRecordResponse;
+import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.BaseService;
 import com.medicalassistance.core.service.CounselorService;
@@ -66,5 +63,12 @@ public class CounselorController {
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.POST)
     public void makeDoctorAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
         counselorService.storeCounselorAppointment(appointmentRequest);
+    }
+
+    @RequestMapping(value = "/doctor", method = RequestMethod.GET)
+    public Page<DoctorCardResponse> getDoctorPage(@RequestParam(defaultValue = "0") Integer page,
+                                                  @RequestParam(defaultValue = "10") Integer size) {
+        Pageable paging = PageRequest.of(page, size);
+        return counselorService.getDoctorPage(paging);
     }
 }

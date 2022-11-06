@@ -1,5 +1,6 @@
 package com.medicalassistance.core.service;
 
+import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.CounselorAppointment;
@@ -8,11 +9,13 @@ import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.exception.InvalidUserRequestException;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
+import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.ActivePatientRepository;
 import com.medicalassistance.core.repository.CounselorAppointmentRepository;
 import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
+import com.medicalassistance.core.response.DoctorCardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +43,9 @@ public class CounselorService {
 
     @Autowired
     PatientRecordService patientRecordService;
+
+    @Autowired
+    UserMapper userMapper;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
         if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= ((new Date()).getTime() / 1000) ||
@@ -73,5 +79,9 @@ public class CounselorService {
         Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), ZonedDateTime.now(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
+    }
+
+    public Page<DoctorCardResponse> getDoctorPage(Pageable pageable) {
+        return userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
     }
 }

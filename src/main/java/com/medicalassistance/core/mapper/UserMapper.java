@@ -3,6 +3,7 @@ package com.medicalassistance.core.mapper;
 
 import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.request.UserRequest;
+import com.medicalassistance.core.response.DoctorCardResponse;
 import com.medicalassistance.core.response.UserCardResponse;
 import com.medicalassistance.core.response.UserResponse;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,13 @@ public class UserMapper {
         response.setCountry(user.getCountry());
         response.setPhoneNumber(user.getPhoneNumber());
         response.setAge((new Date()).getYear() - user.getDateOfBirth().getYear());
+        return response;
+    }
+
+    public DoctorCardResponse toDoctorCardResponse(User user) {
+        DoctorCardResponse response = new DoctorCardResponse();
+        response.setFullName(user.getFullName());
+        response.setPhoneNumber(user.getPhoneNumber());
         return response;
     }
 }
