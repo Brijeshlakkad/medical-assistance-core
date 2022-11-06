@@ -1,14 +1,10 @@
 package com.medicalassistance.core.service;
 
+import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.ActivePatient;
-import com.medicalassistance.core.entity.AssessmentResult;
-import com.medicalassistance.core.entity.AttemptedQuestion;
+import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.mapper.UserMapper;
-import com.medicalassistance.core.repository.ActivePatientRepository;
-import com.medicalassistance.core.repository.AssessmentResultRepository;
-import com.medicalassistance.core.repository.BooleanQuestionRepository;
-import com.medicalassistance.core.repository.UserRepository;
+import com.medicalassistance.core.repository.*;
 import com.medicalassistance.core.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +31,15 @@ public class PatientService {
 
     @Autowired
     BooleanQuestionRepository booleanQuestionRepository;
+
+    @Autowired
+    PatientRecordRepository patientRecordRepository;
+
+    @Autowired
+    CounselorAppointmentRepository counselorAppointmentRepository;
+
+    @Autowired
+    DoctorAppointmentRepository doctorAppointmentRepository;
 
     public PatientRecordCardListResponse getActivePatients() {
         List<ActivePatient> activePatients = activePatientRepository.findAll();
@@ -72,4 +77,28 @@ public class PatientService {
         return response;
     }
 
+    public PatientRecordStatusResponse getPatientRecordStatus() {
+        String patientId = userCommonService.getUser().getUserId();
+        ActivePatient activePatient = activePatientRepository.findByPatientId(patientId);
+        if (activePatient == null) {
+            return new PatientRecordStatusResponse(PatientRecordStatus.NULL);
+        }
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
+        PatientRecordStatusResponse patientRecordStatusResponse = new PatientRecordStatusResponse();
+        patientRecordStatusResponse.setPatientRecordStatus(patientRecord.getStatus());
+        patientRecordStatusResponse.setCreatedAt(patientRecord.getCreatedAt());
+        patientRecordStatusResponse.setUpdatedAt(patientRecord.getUpdatedAt());
+
+        if (patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT) {
+            CounselorAppointment appointment = counselorAppointmentRepository.findByAppointmentId(patientRecord.getRelatedKey());
+            patientRecordStatusResponse.setStartDateTime(appointment.getStartDateTime());
+            patientRecordStatusResponse.setEndDateTime(appointment.getEndDateTime());
+        }
+        if (patientRecord.getStatus() == PatientRecordStatus.DOCTOR_APPOINTMENT) {
+            DoctorAppointment appointment = doctorAppointmentRepository.findByAppointmentId(patientRecord.getRelatedKey());
+            patientRecordStatusResponse.setStartDateTime(appointment.getStartDateTime());
+            patientRecordStatusResponse.setEndDateTime(appointment.getEndDateTime());
+        }
+        return patientRecordStatusResponse;
+    }
 }

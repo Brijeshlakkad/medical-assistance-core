@@ -1,59 +1,60 @@
 package com.medicalassistance.core.response;
 
-import java.util.Date;
+import com.medicalassistance.core.common.PatientRecordStatus;
 
-public class AppointmentResponse {
-    private String appointmentId;
+import java.time.ZonedDateTime;
 
-    private UserCardResponse patient;
+public class PatientRecordStatusResponse {
+    private PatientRecordStatus patientRecordStatus;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
+    private ZonedDateTime startDateTime;
+    private ZonedDateTime endDateTime;
 
-    private Long startDateTime;
-
-    private Long endDateTime;
-
-    private Long createdAt;
-
-    public String getAppointmentId() {
-        return appointmentId;
+    public PatientRecordStatusResponse() {
     }
 
-    public void setAppointmentId(String appointmentId) {
-        this.appointmentId = appointmentId;
+    public PatientRecordStatusResponse(PatientRecordStatus patientRecordStatus) {
+        this.patientRecordStatus = patientRecordStatus;
     }
 
-    public UserCardResponse getPatient() {
-        return patient;
+    public PatientRecordStatus getPatientRecordStatus() {
+        return patientRecordStatus;
     }
 
-    public void setPatient(UserCardResponse patient) {
-        this.patient = patient;
+    public void setPatientRecordStatus(PatientRecordStatus patientRecordStatus) {
+        this.patientRecordStatus = patientRecordStatus;
     }
 
-    public Long getStartDateTime() {
-        return startDateTime;
-    }
-
-    public void setStartDateTime(Long startDateTime) {
-        this.startDateTime = startDateTime;
-    }
-
-    public Long getEndDateTime() {
-        return endDateTime;
-    }
-
-    public void setEndDateTime(Long endDateTime) {
-        this.endDateTime = endDateTime;
-    }
-
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Long getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt.getTime();
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public ZonedDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(ZonedDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public ZonedDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(ZonedDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public ZonedDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(ZonedDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
 }

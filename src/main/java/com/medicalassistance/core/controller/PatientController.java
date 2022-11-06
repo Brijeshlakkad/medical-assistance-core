@@ -6,10 +6,12 @@ import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
 import com.medicalassistance.core.response.AssessmentResponse;
 import com.medicalassistance.core.response.LoginResponse;
+import com.medicalassistance.core.response.PatientRecordStatusResponse;
 import com.medicalassistance.core.response.UserCardResponse;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.AssessmentService;
 import com.medicalassistance.core.service.BaseService;
+import com.medicalassistance.core.service.PatientService;
 import com.medicalassistance.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,9 @@ public class PatientController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PatientService patientService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
@@ -55,5 +60,10 @@ public class PatientController {
     @RequestMapping(value = "/assessment/{assessmentId}", method = RequestMethod.POST)
     public void storeAssessment(@PathVariable String assessmentId, @Valid @RequestBody AssessmentResultRequest assessmentResultRequest) {
         assessmentService.storeAssessmentResult(assessmentId, assessmentResultRequest);
+    }
+
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    public PatientRecordStatusResponse getStatus() {
+        return patientService.getPatientRecordStatus();
     }
 }

@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppointment, String> {
     Page<DoctorAppointment> findByDoctorIdAndStartDateTimeGreaterThanEqual(String doctorId, ZonedDateTime date, Pageable pageable);
@@ -14,4 +13,6 @@ public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppoi
     boolean existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE, ZonedDateTime endDateTimeE);
 
     boolean existsByEndDateTimeBetweenOrEndDateTimeEqualsOrEndDateTimeEquals(ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE, ZonedDateTime endDateTimeE);
+
+    DoctorAppointment findByAppointmentId(String appointmentId);
 }
