@@ -1,9 +1,21 @@
 package com.medicalassistance.core.response;
 
 public class DoctorCardResponse {
+    private String registrationNumber;
+
     private String fullName;
 
+    private String emailAddress;
+
     private String phoneNumber;
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
 
     public String getFullName() {
         return fullName;
@@ -11,6 +23,14 @@ public class DoctorCardResponse {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public String getPhoneNumber() {
