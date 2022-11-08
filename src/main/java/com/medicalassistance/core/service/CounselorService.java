@@ -25,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 @Service
 public class CounselorService {
@@ -54,7 +53,8 @@ public class CounselorService {
     AssignedPatientRepository assignedPatientRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
-        if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= ((new Date()).getTime() / 1000) ||
+        if (appointmentRequest.getStartDateTime().isBefore(ZonedDateTime.now()) ||
+                appointmentRequest.getStartDateTime().isEqual(ZonedDateTime.now()) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
                 appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())) {
             throw new InvalidUserRequestException("appointment time period invalid");
