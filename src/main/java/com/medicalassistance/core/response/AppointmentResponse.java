@@ -3,7 +3,7 @@ package com.medicalassistance.core.response;
 import java.time.ZonedDateTime;
 
 public class AppointmentResponse {
-    private String appointmentId;
+    private String patientRecordId;
 
     private UserCardResponse patient;
 
@@ -13,12 +13,12 @@ public class AppointmentResponse {
 
     private ZonedDateTime createdAt;
 
-    public String getAppointmentId() {
-        return appointmentId;
+    public String getPatientRecordId() {
+        return patientRecordId;
     }
 
-    public void setAppointmentId(String appointmentId) {
-        this.appointmentId = appointmentId;
+    public void setPatientRecordId(String patientRecordId) {
+        this.patientRecordId = patientRecordId;
     }
 
     public UserCardResponse getPatient() {

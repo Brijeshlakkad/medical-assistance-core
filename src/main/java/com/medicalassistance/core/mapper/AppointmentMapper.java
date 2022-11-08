@@ -29,6 +29,8 @@ public class AppointmentMapper {
         ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getActivePatientId());
         if (activePatient != null) {
             AppointmentResponse appointmentResponse = new AppointmentResponse();
+            appointmentResponse.setPatientRecordId(appointment.getActivePatientId());
+            appointmentResponse.setCreatedAt(appointment.getCreatedAt());
             appointmentResponse.setStartDateTime(appointment.getStartDateTime());
             appointmentResponse.setEndDateTime(appointment.getEndDateTime());
             appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
