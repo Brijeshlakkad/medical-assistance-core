@@ -1,6 +1,6 @@
 package com.medicalassistance.core.response;
 
-public class DoctorCardResponse {
+public class CounselorDoctorCardResponse {
     private String registrationNumber;
 
     private String fullName;

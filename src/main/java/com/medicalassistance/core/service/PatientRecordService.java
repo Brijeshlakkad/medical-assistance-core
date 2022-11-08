@@ -52,7 +52,7 @@ public class PatientRecordService {
             // update patient record (ActivePatient)
             PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
             patientRecord.update();
-            patientRecord.setRelatedKey(appointment.getAppointmentId());
+            patientRecord.setAppointmentId(appointment.getAppointmentId());
             patientRecord.setStatus(status);
             return patientRecordRepository.save(patientRecord);
         }
@@ -65,7 +65,7 @@ public class PatientRecordService {
         // update patient record
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
         patientRecord.update();
-        patientRecord.setRelatedKey(assignedPatient.getAssignedPatientId());
+        patientRecord.setAssignedPatientId(assignedPatient.getAssignedPatientId());
         patientRecord.setStatus(PatientRecordStatus.DOCTOR_IN_PROGRESS);
         return patientRecordRepository.save(patientRecord);
     }

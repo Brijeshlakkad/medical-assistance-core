@@ -21,7 +21,10 @@ public class PatientRecord extends DateDomainObject {
     private PatientRecordStatus status = PatientRecordStatus.NULL;
 
     @Indexed(unique = true)
-    private String relatedKey;
+    private String appointmentId;
+
+    @Indexed(unique = true)
+    private String assignedPatientId;
 
     public String getPatientRecordId() {
         return patientRecordId;
@@ -55,11 +58,19 @@ public class PatientRecord extends DateDomainObject {
         this.status = status;
     }
 
-    public String getRelatedKey() {
-        return relatedKey;
+    public String getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setRelatedKey(String relatedKey) {
-        this.relatedKey = relatedKey;
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getAssignedPatientId() {
+        return assignedPatientId;
+    }
+
+    public void setAssignedPatientId(String assignedPatientId) {
+        this.assignedPatientId = assignedPatientId;
     }
 }

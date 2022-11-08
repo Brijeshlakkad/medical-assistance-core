@@ -44,7 +44,7 @@ public class CounselorController {
         return baseService.signUp(request, AuthorityName.ROLE_COUNSELOR);
     }
 
-    @RequestMapping(value = "/patients", method = RequestMethod.GET)
+    @RequestMapping(value = "/patient", method = RequestMethod.GET)
     public PatientRecordCardListResponse getPatientList() {
         return patientService.getActivePatients();
     }
@@ -67,8 +67,8 @@ public class CounselorController {
     }
 
     @RequestMapping(value = "/doctor", method = RequestMethod.GET)
-    public Page<DoctorCardResponse> getDoctorPage(@RequestParam(defaultValue = "0") Integer page,
-                                                  @RequestParam(defaultValue = "10") Integer size) {
+    public Page<CounselorDoctorCardResponse> getDoctorPage(@RequestParam(defaultValue = "0") Integer page,
+                                                           @RequestParam(defaultValue = "10") Integer size) {
         Pageable paging = PageRequest.of(page, size);
         return counselorService.getDoctorPage(paging);
     }

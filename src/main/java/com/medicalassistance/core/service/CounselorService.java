@@ -18,7 +18,7 @@ import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.DoctorAssignmentRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
-import com.medicalassistance.core.response.DoctorCardResponse;
+import com.medicalassistance.core.response.CounselorDoctorCardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -87,24 +87,28 @@ public class CounselorService {
         return pages.map(appointmentMapper::toAppointmentResponse);
     }
 
-    public Page<DoctorCardResponse> getDoctorPage(Pageable pageable) {
+    public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {
         return userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
     }
 
     public void assignDoctorToPatient(DoctorAssignmentRequest doctorAssignmentRequest) {
-        String counselorId = userCommonService.getUser().getUserId();
+        String counselorRegistrationNumber = userCommonService.getUser().getRegistrationNumber();
         if (!activePatientRepository.existsByActivePatientId(doctorAssignmentRequest.getActivePatientId())) {
-            throw new ResourceNotFoundException(String.format("active patient file %s not found", doctorAssignmentRequest.getActivePatientId()));
+            throw new ResourceNotFoundException(String.format("active patient record %s not found", doctorAssignmentRequest.getActivePatientId()));
         }
         if (!userRepository.existsByRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber())) {
             throw new ResourceNotFoundException(String.format("doctor with %s not found", doctorAssignmentRequest.getDoctorRegistrationNumber()));
+        }
+        // check if the active patient record has already been assigned to a doctor
+        if (assignedPatientRepository.existsByActivePatientId(doctorAssignmentRequest.getActivePatientId())) {
+            throw new AlreadyExistsException(String.format("active patient record %s is already assigned to a doctor", doctorAssignmentRequest.getActivePatientId()));
         }
 
         // save assigned patient record
         AssignedPatient assignedPatient = new AssignedPatient();
         assignedPatient.setActivePatientId(doctorAssignmentRequest.getActivePatientId());
         assignedPatient.setDoctorRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber());
-        assignedPatient.setCounselorId(counselorId);
+        assignedPatient.setCounselorRegistrationNumber(counselorRegistrationNumber);
         assignedPatient = assignedPatientRepository.save(assignedPatient);
 
         // update patient record after assigning a doctor to active patient record

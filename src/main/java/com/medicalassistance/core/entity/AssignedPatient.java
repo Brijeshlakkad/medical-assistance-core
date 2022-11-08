@@ -15,7 +15,7 @@ public class AssignedPatient extends DateDomainObject {
 
     private String activePatientId;
 
-    private String counselorId;
+    private String counselorRegistrationNumber;
 
     public String getDoctorRegistrationNumber() {
         return doctorRegistrationNumber;
@@ -41,11 +41,11 @@ public class AssignedPatient extends DateDomainObject {
         this.activePatientId = activePatientId;
     }
 
-    public String getCounselorId() {
-        return counselorId;
+    public String getCounselorRegistrationNumber() {
+        return counselorRegistrationNumber;
     }
 
-    public void setCounselorId(String counselorId) {
-        this.counselorId = counselorId;
+    public void setCounselorRegistrationNumber(String counselorRegistrationNumber) {
+        this.counselorRegistrationNumber = counselorRegistrationNumber;
     }
 }

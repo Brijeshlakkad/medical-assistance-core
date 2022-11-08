@@ -48,7 +48,7 @@ public class PatientService {
         for (ActivePatient activePatient : activePatients) {
             PatientRecordCardResponse cardResponse = new PatientRecordCardResponse();
             cardResponse.setPatientRecordId(activePatient.getActivePatientId());
-            cardResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
+            cardResponse.setPatient(userMapper.toPatientCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
             cardResponse.setAssessmentCreatedAt(activePatient.getCreatedAt());
             response.addPatientRecordCardResponse(cardResponse);
         }
@@ -90,12 +90,12 @@ public class PatientService {
         patientRecordStatusResponse.setUpdatedAt(patientRecord.getUpdatedAt());
 
         if (patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT) {
-            CounselorAppointment appointment = counselorAppointmentRepository.findByAppointmentId(patientRecord.getRelatedKey());
+            CounselorAppointment appointment = counselorAppointmentRepository.findByAppointmentId(patientRecord.getAppointmentId());
             patientRecordStatusResponse.setStartDateTime(appointment.getStartDateTime());
             patientRecordStatusResponse.setEndDateTime(appointment.getEndDateTime());
         }
         if (patientRecord.getStatus() == PatientRecordStatus.DOCTOR_APPOINTMENT) {
-            DoctorAppointment appointment = doctorAppointmentRepository.findByAppointmentId(patientRecord.getRelatedKey());
+            DoctorAppointment appointment = doctorAppointmentRepository.findByAppointmentId(patientRecord.getAppointmentId());
             patientRecordStatusResponse.setStartDateTime(appointment.getStartDateTime());
             patientRecordStatusResponse.setEndDateTime(appointment.getEndDateTime());
         }

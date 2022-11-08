@@ -5,8 +5,8 @@ import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
+import com.medicalassistance.core.response.AssignedPatientResponse;
 import com.medicalassistance.core.response.LoginResponse;
-import com.medicalassistance.core.response.PatientRecordCardListResponse;
 import com.medicalassistance.core.response.PatientRecordResponse;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.BaseService;
@@ -46,9 +46,11 @@ public class DoctorController {
         return baseService.signUp(request, AuthorityName.ROLE_DOCTOR);
     }
 
-    @RequestMapping(value = "/patients", method = RequestMethod.GET)
-    public PatientRecordCardListResponse getPatientList() {
-        return patientService.getActivePatients();
+    @RequestMapping(value = "/patient", method = RequestMethod.GET)
+    public Page<AssignedPatientResponse> getAssignedPatients(@RequestParam(defaultValue = "0") Integer page,
+                                                             @RequestParam(defaultValue = "10") Integer size) {
+        Pageable paging = PageRequest.of(page, size);
+        return doctorService.getAssignedPatients(paging);
     }
 
     @RequestMapping(value = "/patient/{activePatientId}", method = RequestMethod.GET)

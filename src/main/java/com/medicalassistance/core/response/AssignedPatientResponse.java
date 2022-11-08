@@ -2,10 +2,16 @@ package com.medicalassistance.core.response;
 
 import java.time.ZonedDateTime;
 
-public class PatientRecordCardResponse {
-    String patientRecordId;
-    PatientCardResponse patient;
-    ZonedDateTime assessmentCreatedAt;
+public class AssignedPatientResponse {
+    private String patientRecordId;
+
+    private PatientCardResponse patient;
+
+    private CounselorDoctorCardResponse counselor;
+
+    private ZonedDateTime assignedAt;
+
+    private ZonedDateTime assessmentCreatedAt;
 
     public String getPatientRecordId() {
         return patientRecordId;
@@ -21,6 +27,22 @@ public class PatientRecordCardResponse {
 
     public void setPatient(PatientCardResponse patient) {
         this.patient = patient;
+    }
+
+    public CounselorDoctorCardResponse getCounselor() {
+        return counselor;
+    }
+
+    public void setCounselor(CounselorDoctorCardResponse counselor) {
+        this.counselor = counselor;
+    }
+
+    public ZonedDateTime getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(ZonedDateTime assignedAt) {
+        this.assignedAt = assignedAt;
     }
 
     public ZonedDateTime getAssessmentCreatedAt() {

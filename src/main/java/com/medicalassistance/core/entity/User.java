@@ -34,7 +34,6 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @Indexed(unique = true)
     private String registrationNumber;
 
     @JsonIgnore
