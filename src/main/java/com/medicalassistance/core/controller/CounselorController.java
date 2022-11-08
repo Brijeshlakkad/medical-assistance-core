@@ -2,6 +2,7 @@ package com.medicalassistance.core.controller;
 
 import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.request.AppointmentRequest;
+import com.medicalassistance.core.request.DoctorAssignmentRequest;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
 import com.medicalassistance.core.response.*;
@@ -70,5 +71,10 @@ public class CounselorController {
                                                   @RequestParam(defaultValue = "10") Integer size) {
         Pageable paging = PageRequest.of(page, size);
         return counselorService.getDoctorPage(paging);
+    }
+
+    @RequestMapping(value = "/doctor", method = RequestMethod.POST)
+    public void assignDoctorToPatient(@Valid @RequestBody DoctorAssignmentRequest doctorAssignmentRequest) {
+        counselorService.assignDoctorToPatient(doctorAssignmentRequest);
     }
 }

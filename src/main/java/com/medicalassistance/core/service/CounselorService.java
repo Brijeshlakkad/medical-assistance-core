@@ -3,6 +3,7 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
+import com.medicalassistance.core.entity.AssignedPatient;
 import com.medicalassistance.core.entity.CounselorAppointment;
 import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.exception.AlreadyExistsException;
@@ -11,9 +12,11 @@ import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.ActivePatientRepository;
+import com.medicalassistance.core.repository.AssignedPatientRepository;
 import com.medicalassistance.core.repository.CounselorAppointmentRepository;
 import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.AppointmentRequest;
+import com.medicalassistance.core.request.DoctorAssignmentRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.DoctorCardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +49,9 @@ public class CounselorService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    AssignedPatientRepository assignedPatientRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
         if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= ((new Date()).getTime() / 1000) ||
@@ -83,5 +89,25 @@ public class CounselorService {
 
     public Page<DoctorCardResponse> getDoctorPage(Pageable pageable) {
         return userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
+    }
+
+    public void assignDoctorToPatient(DoctorAssignmentRequest doctorAssignmentRequest) {
+        String counselorId = userCommonService.getUser().getUserId();
+        if (!activePatientRepository.existsByActivePatientId(doctorAssignmentRequest.getActivePatientId())) {
+            throw new ResourceNotFoundException(String.format("active patient file %s not found", doctorAssignmentRequest.getActivePatientId()));
+        }
+        if (!userRepository.existsByRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber())) {
+            throw new ResourceNotFoundException(String.format("doctor with %s not found", doctorAssignmentRequest.getDoctorRegistrationNumber()));
+        }
+
+        // save assigned patient record
+        AssignedPatient assignedPatient = new AssignedPatient();
+        assignedPatient.setActivePatientId(doctorAssignmentRequest.getActivePatientId());
+        assignedPatient.setDoctorRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber());
+        assignedPatient.setCounselorId(counselorId);
+        assignedPatient = assignedPatientRepository.save(assignedPatient);
+
+        // update patient record after assigning a doctor to active patient record
+        patientRecordService.afterAssigningDoctor(assignedPatient);
     }
 }

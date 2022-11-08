@@ -2,10 +2,7 @@ package com.medicalassistance.core.service;
 
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.ActivePatient;
-import com.medicalassistance.core.entity.Appointment;
-import com.medicalassistance.core.entity.AssessmentResult;
-import com.medicalassistance.core.entity.PatientRecord;
+import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,5 +57,16 @@ public class PatientRecordService {
             return patientRecordRepository.save(patientRecord);
         }
         return null;
+    }
+
+    public PatientRecord afterAssigningDoctor(AssignedPatient assignedPatient) {
+        ActivePatient activePatient = activePatientRepository.findByActivePatientId(assignedPatient.getActivePatientId());
+
+        // update patient record
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
+        patientRecord.update();
+        patientRecord.setRelatedKey(assignedPatient.getAssignedPatientId());
+        patientRecord.setStatus(PatientRecordStatus.DOCTOR_IN_PROGRESS);
+        return patientRecordRepository.save(patientRecord);
     }
 }
