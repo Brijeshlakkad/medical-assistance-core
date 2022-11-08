@@ -1,12 +1,12 @@
 package com.medicalassistance.core.repository;
 
 import com.medicalassistance.core.entity.ActivePatient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.List;
-
 public interface ActivePatientRepository extends MongoRepository<ActivePatient, String> {
-    List<ActivePatient> findAll();
+    Page<ActivePatient> findAll(Pageable pageable);
 
     ActivePatient findByActivePatientId(String activePatientId);
 

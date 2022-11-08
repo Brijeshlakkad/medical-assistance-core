@@ -3,10 +3,13 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.*;
+import com.medicalassistance.core.mapper.ActivePatientMapper;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.*;
 import com.medicalassistance.core.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,19 +44,13 @@ public class PatientService {
     @Autowired
     DoctorAppointmentRepository doctorAppointmentRepository;
 
-    public PatientRecordCardListResponse getActivePatients() {
-        List<ActivePatient> activePatients = activePatientRepository.findAll();
+    @Autowired
+    ActivePatientMapper activePatientMapper;
 
-        PatientRecordCardListResponse response = new PatientRecordCardListResponse();
-        for (ActivePatient activePatient : activePatients) {
-            PatientRecordCardResponse cardResponse = new PatientRecordCardResponse();
-            cardResponse.setPatientRecordId(activePatient.getActivePatientId());
-            cardResponse.setPatient(userMapper.toPatientCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
-            cardResponse.setAssessmentCreatedAt(activePatient.getCreatedAt());
-            response.addPatientRecordCardResponse(cardResponse);
-        }
+    public Page<PatientRecordCardResponse> getActivePatients(Pageable pageable) {
+        Page<ActivePatient> activePatients = activePatientRepository.findAll(pageable);
 
-        return response;
+        return activePatients.map(activePatientMapper::toPatientRecordCardResponse);
     }
 
     public PatientRecordResponse getActivePatient(String activePatientId) {

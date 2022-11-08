@@ -45,8 +45,10 @@ public class CounselorController {
     }
 
     @RequestMapping(value = "/patient", method = RequestMethod.GET)
-    public PatientRecordCardListResponse getPatientList() {
-        return patientService.getActivePatients();
+    public Page<PatientRecordCardResponse> getPatientList(@RequestParam(defaultValue = "0") Integer page,
+                                                          @RequestParam(defaultValue = "10") Integer size) {
+        Pageable paging = PageRequest.of(page, size);
+        return patientService.getActivePatients(paging);
     }
 
     @RequestMapping(value = "/patient/{activePatientId}", method = RequestMethod.GET)
