@@ -62,6 +62,9 @@ public class PatientRecordService {
     public PatientRecord afterAssigningDoctor(AssignedPatient assignedPatient) {
         ActivePatient activePatient = activePatientRepository.findByActivePatientId(assignedPatient.getActivePatientId());
 
+        // delete active patient
+        activePatientRepository.delete(activePatient);
+
         // update patient record
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
         patientRecord.update();
