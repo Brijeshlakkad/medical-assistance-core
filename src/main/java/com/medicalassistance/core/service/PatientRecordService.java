@@ -32,7 +32,7 @@ public class PatientRecordService {
         PatientRecord patientRecord = new PatientRecord();
         patientRecord.setAssessmentResultId(assessmentResult.getAssessmentResultId());
         patientRecord.setPatientId(assessmentResult.getPatientId());
-        patientRecord.setStatus(PatientRecordStatus.NULL);
+        patientRecord.setStatus(PatientRecordStatus.COUNSELOR_IN_PROGRESS);
         patientRecord = patientRecordRepository.save(patientRecord);
 
         // create an active patient record
