@@ -2,12 +2,10 @@ package com.medicalassistance.core.mapper;
 
 
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.ActivePatient;
 import com.medicalassistance.core.entity.AssessmentResult;
 import com.medicalassistance.core.entity.AssignedPatient;
 import com.medicalassistance.core.entity.PatientRecord;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
-import com.medicalassistance.core.repository.ActivePatientRepository;
 import com.medicalassistance.core.repository.AssessmentResultRepository;
 import com.medicalassistance.core.repository.PatientRecordRepository;
 import com.medicalassistance.core.repository.UserRepository;
@@ -19,9 +17,6 @@ import org.springframework.stereotype.Component;
 public class AssignedPatientMapper {
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private ActivePatientRepository activePatientRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -36,19 +31,19 @@ public class AssignedPatientMapper {
     private AssessmentResultRepository assessmentResultRepository;
 
     public AssignedPatientResponse toAssignedPatientResponse(AssignedPatient assignedPatient) {
-        if (activePatientRepository.existsByActivePatientId(assignedPatient.getActivePatientId())) {
-            ActivePatient activePatient = activePatientRepository.findByActivePatientId(assignedPatient.getActivePatientId());
+        if (patientRecordRepository.existsByPatientRecordId(assignedPatient.getPatientRecordId())) {
+            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(assignedPatient.getPatientRecordId());
             AssignedPatientResponse appointmentResponse = new AssignedPatientResponse();
 
-            appointmentResponse.setPatientRecordId(assignedPatient.getActivePatientId());
+            appointmentResponse.setPatientRecordId(assignedPatient.getPatientRecordId());
             appointmentResponse.setCounselor(userRepository.findFirstByRegistrationNumber(assignedPatient.getCounselorRegistrationNumber()));
-            appointmentResponse.setPatient(userMapper.toPatientCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
-            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
+            appointmentResponse.setPatient(userMapper.toPatientCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+
             AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(patientRecord.getAssessmentResultId());
             appointmentResponse.setAssessmentCreatedAt(assessmentResult.getCreatedAt());
             appointmentResponse.setAssignedAt(assignedPatient.getCreatedAt());
             return appointmentResponse;
         }
-        throw new ResourceNotFoundException("active patient record doesn't found");
+        throw new ResourceNotFoundException("patient record doesn't found");
     }
 }

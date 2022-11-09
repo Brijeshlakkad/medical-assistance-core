@@ -47,7 +47,7 @@ public class PatientRecordService {
 
     public PatientRecord afterAppointment(Appointment appointment, PatientRecordStatus status) {
         if (status == PatientRecordStatus.COUNSELOR_APPOINTMENT || status == PatientRecordStatus.DOCTOR_APPOINTMENT) {
-            ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getActivePatientId());
+            ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getPatientRecordId());
 
             // update patient record (ActivePatient)
             PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
@@ -59,8 +59,8 @@ public class PatientRecordService {
         return null;
     }
 
-    public PatientRecord afterAssigningDoctor(AssignedPatient assignedPatient) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(assignedPatient.getActivePatientId());
+    public PatientRecord afterAssigningDoctor(AssignedPatient assignedPatient, String activePatientId) {
+        ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
 
         // delete active patient
         activePatientRepository.delete(activePatient);

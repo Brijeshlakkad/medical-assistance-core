@@ -55,7 +55,7 @@ public class DoctorController {
 
     @RequestMapping(value = "/patient/{activePatientId}", method = RequestMethod.GET)
     public PatientRecordResponse getPatientRecord(@PathVariable String activePatientId) {
-        return patientService.getActivePatient(activePatientId);
+        return doctorService.getActivePatient(activePatientId);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.GET)

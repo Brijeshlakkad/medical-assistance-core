@@ -53,7 +53,7 @@ public class CounselorController {
 
     @RequestMapping(value = "/patient/{activePatientId}", method = RequestMethod.GET)
     public PatientRecordResponse getPatientRecord(@PathVariable String activePatientId) {
-        return patientService.getActivePatient(activePatientId);
+        return counselorService.getActivePatient(activePatientId);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.GET)

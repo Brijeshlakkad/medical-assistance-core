@@ -26,10 +26,10 @@ public class AppointmentMapper {
     private UserCommonService userCommonService;
 
     public AppointmentResponse toAppointmentResponse(Appointment appointment) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getActivePatientId());
+        ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getPatientRecordId());
         if (activePatient != null) {
             AppointmentResponse appointmentResponse = new AppointmentResponse();
-            appointmentResponse.setPatientRecordId(appointment.getActivePatientId());
+            appointmentResponse.setPatientRecordId(appointment.getPatientRecordId());
             appointmentResponse.setCreatedAt(appointment.getCreatedAt());
             appointmentResponse.setStartDateTime(appointment.getStartDateTime());
             appointmentResponse.setEndDateTime(appointment.getEndDateTime());
@@ -45,7 +45,7 @@ public class AppointmentMapper {
         doctorAppointment.setStartDateTime(appointmentRequest.getStartDateTime());
         doctorAppointment.setEndDateTime(appointmentRequest.getEndDateTime());
         doctorAppointment.setDoctorId(user.getUserId());
-        doctorAppointment.setActivePatientId(appointmentRequest.getActivePatientId());
+        doctorAppointment.setPatientRecordId(appointmentRequest.getPatientRecordId());
         return doctorAppointment;
     }
 
@@ -55,7 +55,7 @@ public class AppointmentMapper {
         counselorAppointment.setStartDateTime(appointmentRequest.getStartDateTime());
         counselorAppointment.setEndDateTime(appointmentRequest.getEndDateTime());
         counselorAppointment.setCounselorId(user.getUserId());
-        counselorAppointment.setActivePatientId(appointmentRequest.getActivePatientId());
+        counselorAppointment.setPatientRecordId(appointmentRequest.getPatientRecordId());
         return counselorAppointment;
     }
 }

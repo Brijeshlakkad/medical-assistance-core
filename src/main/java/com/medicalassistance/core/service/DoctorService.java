@@ -4,19 +4,22 @@ import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.AssignedPatient;
 import com.medicalassistance.core.entity.DoctorAppointment;
+import com.medicalassistance.core.entity.PatientRecord;
 import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.exception.InvalidUserRequestException;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
 import com.medicalassistance.core.mapper.AssignedPatientMapper;
-import com.medicalassistance.core.repository.ActivePatientRepository;
+import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.AssignedPatientRepository;
 import com.medicalassistance.core.repository.DoctorAppointmentRepository;
+import com.medicalassistance.core.repository.PatientRecordRepository;
 import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.AssignedPatientResponse;
+import com.medicalassistance.core.response.PatientRecordResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +43,6 @@ public class DoctorService {
     UserRepository userRepository;
 
     @Autowired
-    ActivePatientRepository activePatientRepository;
-
-    @Autowired
     PatientRecordService patientRecordService;
 
     @Autowired
@@ -51,6 +51,15 @@ public class DoctorService {
     @Autowired
     AssignedPatientMapper assignedPatientMapper;
 
+    @Autowired
+    PatientRecordRepository patientRecordRepository;
+
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    PatientService patientService;
+
     public void storeDoctorAppointment(AppointmentRequest appointmentRequest) {
         if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= ((new Date()).getTime() / 1000) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
@@ -58,7 +67,7 @@ public class DoctorService {
         ) {
             throw new InvalidUserRequestException("appointment time period invalid");
         }
-        if (activePatientRepository.existsByActivePatientId(appointmentRequest.getActivePatientId())) {
+        if (patientRecordRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
             if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(
                     appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
                     appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime()) ||
@@ -75,7 +84,7 @@ public class DoctorService {
             patientRecordService.afterAppointment(doctorAppointment, PatientRecordStatus.DOCTOR_APPOINTMENT);
             return;
         }
-        throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getActivePatientId()));
+        throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
     }
 
     public Page<AppointmentResponse> getDoctorAppointments(Pageable pageable) {
@@ -92,5 +101,15 @@ public class DoctorService {
         Page<AssignedPatient> assignedPatientPage = assignedPatientRepository.findByDoctorRegistrationNumber(user.getRegistrationNumber(), pageable);
 
         return assignedPatientPage.map(assignedPatientMapper::toAssignedPatientResponse);
+    }
+
+    public PatientRecordResponse getActivePatient(String activePatientId) {
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatientId);
+        PatientRecordResponse response = new PatientRecordResponse();
+        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+        response.setRecordId(activePatientId);
+        response.setCreatedAt(patientRecord.getCreatedAt());
+        response.setAssessmentResult(patientService.getAssessmentResultId(patientRecord.getAssessmentResultId()));
+        return response;
     }
 }

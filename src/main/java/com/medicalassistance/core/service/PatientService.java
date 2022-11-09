@@ -53,15 +53,9 @@ public class PatientService {
         return activePatients.map(activePatientMapper::toPatientRecordCardResponse);
     }
 
-    public PatientRecordResponse getActivePatient(String activePatientId) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
-        PatientRecordResponse response = new PatientRecordResponse();
-        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
-        response.setRecordId(activePatientId);
-        response.setCreatedAt(activePatient.getCreatedAt());
-
+    public AssessmentResultResponse getAssessmentResultId(String assessmentResultId) {
         AssessmentResultResponse assessmentResultResponse = new AssessmentResultResponse();
-        AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(activePatient.getAssessmentResultId());
+        AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(assessmentResultId);
         List<AttemptedQuestionResponse> attemptedQuestionResponses = new ArrayList<>();
         for (AttemptedQuestion attemptedQuestion : assessmentResult.getAttemptedQuestions()) {
             attemptedQuestionResponses.add(new AttemptedQuestionResponse(
@@ -70,8 +64,7 @@ public class PatientService {
             ));
         }
         assessmentResultResponse.setAttemptedQuestions(attemptedQuestionResponses);
-        response.setAssessmentResult(assessmentResultResponse);
-        return response;
+        return assessmentResultResponse;
     }
 
     public PatientRecordStatusResponse getPatientRecordStatus() {

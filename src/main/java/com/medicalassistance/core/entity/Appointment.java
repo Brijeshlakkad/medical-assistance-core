@@ -11,7 +11,7 @@ public class Appointment extends DateDomainObject {
     @Id
     private String appointmentId;
 
-    private String activePatientId;
+    private String patientRecordId;
 
     private ZonedDateTime startDateTime;
 
@@ -25,12 +25,12 @@ public class Appointment extends DateDomainObject {
         this.appointmentId = appointmentId;
     }
 
-    public String getActivePatientId() {
-        return activePatientId;
+    public String getPatientRecordId() {
+        return patientRecordId;
     }
 
-    public void setActivePatientId(String activePatientId) {
-        this.activePatientId = activePatientId;
+    public void setPatientRecordId(String patientRecordId) {
+        this.patientRecordId = patientRecordId;
     }
 
     public ZonedDateTime getStartDateTime() {
