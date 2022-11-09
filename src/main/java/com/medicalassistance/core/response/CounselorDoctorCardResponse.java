@@ -9,6 +9,8 @@ public class CounselorDoctorCardResponse {
 
     private String phoneNumber;
 
+    private Integer currentPatients;
+
     public String getRegistrationNumber() {
         return registrationNumber;
     }
@@ -39,5 +41,13 @@ public class CounselorDoctorCardResponse {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Integer getCurrentPatients() {
+        return currentPatients;
+    }
+
+    public void setCurrentPatients(Integer currentPatients) {
+        this.currentPatients = currentPatients;
     }
 }

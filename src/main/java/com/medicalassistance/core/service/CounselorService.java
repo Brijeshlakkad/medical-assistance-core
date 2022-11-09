@@ -22,6 +22,7 @@ import com.medicalassistance.core.response.CounselorDoctorCardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -88,7 +89,11 @@ public class CounselorService {
     }
 
     public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {
-        return userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
+        Page<CounselorDoctorCardResponse> page = userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
+        return page.map((CounselorDoctorCardResponse doctorRecord) -> {
+            doctorRecord.setCurrentPatients(assignedPatientRepository.countByDoctorRegistrationNumber(doctorRecord.getRegistrationNumber()));
+            return doctorRecord;
+        });
     }
 
     public void assignDoctorToPatient(DoctorAssignmentRequest doctorAssignmentRequest) {

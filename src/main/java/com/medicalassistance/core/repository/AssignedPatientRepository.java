@@ -9,4 +9,6 @@ public interface AssignedPatientRepository extends MongoRepository<AssignedPatie
     Page<AssignedPatient> findByDoctorRegistrationNumber(String doctorRegistrationNumber, Pageable pageable);
 
     boolean existsByActivePatientId(String activePatientId);
+
+    Integer countByDoctorRegistrationNumber(String doctorRegistrationNumber);
 }
