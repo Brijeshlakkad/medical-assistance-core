@@ -133,6 +133,7 @@ public class DoctorService {
         if (patientRecord != null) {
             assignedPatientRepository.deleteById(patientRecord.getAssignedPatientId());
             patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.DOCTOR_REJECTED);
+            return;
         }
         throw new ResourceNotFoundException("patient record not found");
     }

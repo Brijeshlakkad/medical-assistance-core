@@ -69,11 +69,7 @@ public class PatientService {
 
     public PatientRecordStatusResponse getPatientRecordStatus() {
         String patientId = userCommonService.getUser().getUserId();
-        ActivePatient activePatient = activePatientRepository.findByPatientId(patientId);
-        if (activePatient == null) {
-            return new PatientRecordStatusResponse(PatientRecordStatus.NULL);
-        }
-        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
+        PatientRecord patientRecord = patientRecordRepository.findTop1ByPatientIdOrderByCreatedAtDesc(patientId);
         PatientRecordStatusResponse patientRecordStatusResponse = new PatientRecordStatusResponse();
         patientRecordStatusResponse.setPatientRecordStatus(patientRecord.getStatus());
         patientRecordStatusResponse.setCreatedAt(patientRecord.getCreatedAt());

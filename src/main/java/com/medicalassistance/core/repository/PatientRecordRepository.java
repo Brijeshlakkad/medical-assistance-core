@@ -7,4 +7,6 @@ public interface PatientRecordRepository extends MongoRepository<PatientRecord, 
     PatientRecord findByPatientRecordId(String patientRecordId);
 
     boolean existsByPatientRecordId(String patientRecordId);
+
+    PatientRecord findTop1ByPatientIdOrderByCreatedAtDesc(String patientId);
 }

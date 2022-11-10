@@ -158,6 +158,7 @@ public class CounselorService {
             activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
 
             patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.COUNSELOR_REJECTED);
+            return;
         }
         throw new ResourceNotFoundException("patient record not found");
     }
