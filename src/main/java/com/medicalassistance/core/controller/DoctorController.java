@@ -1,17 +1,14 @@
 package com.medicalassistance.core.controller;
 
 import com.medicalassistance.core.common.AuthorityName;
+import com.medicalassistance.core.request.AppointmentListForDateRequest;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
-import com.medicalassistance.core.response.AppointmentResponse;
-import com.medicalassistance.core.response.AssignedPatientResponse;
-import com.medicalassistance.core.response.LoginResponse;
-import com.medicalassistance.core.response.PatientRecordResponse;
+import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.BaseService;
 import com.medicalassistance.core.service.DoctorService;
-import com.medicalassistance.core.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -29,9 +27,6 @@ public class DoctorController {
 
     @Autowired
     private BaseService baseService;
-
-    @Autowired
-    private PatientService patientService;
 
     @Autowired
     private DoctorService doctorService;
@@ -63,6 +58,11 @@ public class DoctorController {
                                                            @RequestParam(defaultValue = "10") Integer size) {
         Pageable paging = PageRequest.of(page, size);
         return doctorService.getDoctorAppointments(paging);
+    }
+
+    @RequestMapping(value = "/patient/appointments", method = RequestMethod.POST)
+    public List<AppointmentListForDateResponse> getDoctorAppointmentsByDate(@Valid @RequestBody AppointmentListForDateRequest request) {
+        return doctorService.getCounselorAppointmentsByDate(request);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.POST)

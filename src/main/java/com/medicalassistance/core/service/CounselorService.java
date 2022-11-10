@@ -3,15 +3,20 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.*;
+import com.medicalassistance.core.entity.AssignedPatient;
+import com.medicalassistance.core.entity.CounselorAppointment;
+import com.medicalassistance.core.entity.PatientRecord;
+import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.exception.InvalidUserRequestException;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.*;
+import com.medicalassistance.core.request.AppointmentListForDateRequest;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.DoctorAssignmentRequest;
+import com.medicalassistance.core.response.AppointmentListForDateResponse;
 import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.CounselorDoctorCardResponse;
 import com.medicalassistance.core.response.PatientRecordResponse;
@@ -20,7 +25,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Service
 public class CounselorService {
@@ -55,7 +63,7 @@ public class CounselorService {
     PatientRecordRepository patientRecordRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
-        if (appointmentRequest.getStartDateTime().isBefore(ZonedDateTime.now()) ||
+        if (appointmentRequest.getStartDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)) ||
                 appointmentRequest.getStartDateTime().isEqual(ZonedDateTime.now()) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
                 appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())) {
@@ -87,6 +95,15 @@ public class CounselorService {
         Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), ZonedDateTime.now(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
+    }
+
+    public List<AppointmentListForDateResponse> getCounselorAppointmentsByDate(AppointmentListForDateRequest request) {
+        if (request.getDate() == null) {
+            throw new InvalidUserRequestException("date cannot be null");
+        }
+        User user = userCommonService.getUser();
+
+        return appointmentRepository.findByCounselorIdAndStartDateTimeBetween(user.getUserId(), request.getDate(), request.getDate().plusDays(1));
     }
 
     public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {

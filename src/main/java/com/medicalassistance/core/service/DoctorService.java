@@ -16,7 +16,9 @@ import com.medicalassistance.core.repository.AssignedPatientRepository;
 import com.medicalassistance.core.repository.DoctorAppointmentRepository;
 import com.medicalassistance.core.repository.PatientRecordRepository;
 import com.medicalassistance.core.repository.UserRepository;
+import com.medicalassistance.core.request.AppointmentListForDateRequest;
 import com.medicalassistance.core.request.AppointmentRequest;
+import com.medicalassistance.core.response.AppointmentListForDateResponse;
 import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.AssignedPatientResponse;
 import com.medicalassistance.core.response.PatientRecordResponse;
@@ -25,8 +27,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Date;
+import java.util.List;
 
 @Service
 public class DoctorService {
@@ -61,7 +65,8 @@ public class DoctorService {
     PatientService patientService;
 
     public void storeDoctorAppointment(AppointmentRequest appointmentRequest) {
-        if (appointmentRequest.getStartDateTime().toInstant().toEpochMilli() <= ((new Date()).getTime() / 1000) ||
+        if (appointmentRequest.getStartDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)) ||
+                appointmentRequest.getStartDateTime().isEqual(ZonedDateTime.now()) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
                 appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())
         ) {
@@ -93,6 +98,15 @@ public class DoctorService {
         Page<DoctorAppointment> pages = appointmentRepository.findByDoctorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), ZonedDateTime.now(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
+    }
+
+    public List<AppointmentListForDateResponse> getCounselorAppointmentsByDate(AppointmentListForDateRequest request) {
+        if (request.getDate() == null) {
+            throw new InvalidUserRequestException("date cannot be null");
+        }
+        User user = userCommonService.getUser();
+
+        return appointmentRepository.findByDoctorIdAndStartDateTimeBetween(user.getUserId(), request.getDate(), request.getDate().plusDays(1));
     }
 
     public Page<AssignedPatientResponse> getAssignedPatients(Pageable pageable) {

@@ -1,10 +1,7 @@
 package com.medicalassistance.core.controller;
 
 import com.medicalassistance.core.common.AuthorityName;
-import com.medicalassistance.core.request.AppointmentRequest;
-import com.medicalassistance.core.request.DoctorAssignmentRequest;
-import com.medicalassistance.core.request.LoginRequest;
-import com.medicalassistance.core.request.UserRequest;
+import com.medicalassistance.core.request.*;
 import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.BaseService;
@@ -17,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -57,10 +55,15 @@ public class CounselorController {
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.GET)
-    public Page<AppointmentResponse> getDoctorAppointments(@RequestParam(defaultValue = "0") Integer page,
-                                                           @RequestParam(defaultValue = "10") Integer size) {
+    public Page<AppointmentResponse> getCounselorAppointments(@RequestParam(defaultValue = "0") Integer page,
+                                                              @RequestParam(defaultValue = "10") Integer size) {
         Pageable paging = PageRequest.of(page, size);
         return counselorService.getCounselorAppointments(paging);
+    }
+
+    @RequestMapping(value = "/patient/appointments", method = RequestMethod.POST)
+    public List<AppointmentListForDateResponse> getCounselorAppointmentsByDate(@Valid @RequestBody AppointmentListForDateRequest request) {
+        return counselorService.getCounselorAppointmentsByDate(request);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.POST)
