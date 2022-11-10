@@ -22,13 +22,12 @@ import com.medicalassistance.core.response.AppointmentListForDateResponse;
 import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.AssignedPatientResponse;
 import com.medicalassistance.core.response.PatientRecordResponse;
+import com.medicalassistance.core.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -65,42 +64,44 @@ public class DoctorService {
     PatientService patientService;
 
     public void storeDoctorAppointment(AppointmentRequest appointmentRequest) {
-        if (appointmentRequest.getStartDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)) ||
-                appointmentRequest.getStartDateTime().isEqual(ZonedDateTime.now()) ||
+        ZonedDateTime nowZonedDateTime = TimeUtil.nowUTC();
+        if (appointmentRequest.getStartDateTime().isBefore(nowZonedDateTime) ||
+                appointmentRequest.getStartDateTime().isEqual(nowZonedDateTime) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
-                appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())
-        ) {
+                appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())) {
             throw new InvalidUserRequestException("appointment time period invalid");
         }
-        if (patientRecordRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
-            if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(
-                    appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
-                    appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime()) ||
-                    appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEqualsOrEndDateTimeEquals(
-                            appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
-                            appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime())) {
-                throw new AlreadyExistsException("conflict: doctor has the reserved time slot during the provided time period");
-            }
-            // save doctor appointment
-            DoctorAppointment doctorAppointment = appointmentMapper.fromAppointmentRequestToDoctorAppointment(appointmentRequest);
-            doctorAppointment = appointmentRepository.save(doctorAppointment);
-
-            // update patient record
-            patientRecordService.afterAppointment(doctorAppointment, PatientRecordStatus.DOCTOR_APPOINTMENT);
-            return;
+        if (!patientRecordRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
+            throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
         }
-        throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
+        if (appointmentRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
+            throw new AlreadyExistsException("patient already has reserved timeslot");
+        }
+        if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEquals(
+                appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                appointmentRequest.getStartDateTime()) ||
+                appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEquals(
+                        appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                        appointmentRequest.getEndDateTime())) {
+            throw new AlreadyExistsException("conflict: doctor has the reserved time slot during the provided time period");
+        }
+        // save doctor appointment
+        DoctorAppointment doctorAppointment = appointmentMapper.fromAppointmentRequestToDoctorAppointment(appointmentRequest);
+        doctorAppointment = appointmentRepository.save(doctorAppointment);
+
+        // update patient record
+        patientRecordService.afterAppointment(doctorAppointment, PatientRecordStatus.DOCTOR_APPOINTMENT);
     }
 
     public Page<AppointmentResponse> getDoctorAppointments(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<DoctorAppointment> pages = appointmentRepository.findByDoctorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), ZonedDateTime.now(), pageable);
+        Page<DoctorAppointment> pages = appointmentRepository.findByDoctorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), TimeUtil.nowUTC(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
     }
 
-    public List<AppointmentListForDateResponse> getCounselorAppointmentsByDate(AppointmentListForDateRequest request) {
+    public List<AppointmentListForDateResponse> getDoctorAppointmentsByDate(AppointmentListForDateRequest request) {
         if (request.getDate() == null) {
             throw new InvalidUserRequestException("date cannot be null");
         }

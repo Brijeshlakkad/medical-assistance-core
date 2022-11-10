@@ -1,5 +1,7 @@
 package com.medicalassistance.core.entity;
 
+import com.medicalassistance.core.util.TimeUtil;
+
 import java.time.ZonedDateTime;
 
 /**
@@ -11,8 +13,8 @@ public class DateDomainObject {
     private ZonedDateTime updatedAt;
 
     public DateDomainObject() {
-        this.createdAt = ZonedDateTime.now();
-        this.updatedAt = ZonedDateTime.now();
+        this.createdAt = TimeUtil.nowUTC();
+        this.updatedAt = TimeUtil.nowUTC();
     }
 
     public ZonedDateTime getCreatedAt() {
@@ -32,6 +34,6 @@ public class DateDomainObject {
     }
 
     public void update() {
-        this.updatedAt = ZonedDateTime.now();
+        this.updatedAt = TimeUtil.nowUTC();
     }
 }

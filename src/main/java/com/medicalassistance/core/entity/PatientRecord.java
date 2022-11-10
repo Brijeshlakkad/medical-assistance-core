@@ -20,13 +20,10 @@ public class PatientRecord extends DateDomainObject {
 
     private PatientRecordStatus status = PatientRecordStatus.NULL;
 
-    @Indexed(unique = true)
     private String appointmentId;
 
-    @Indexed(unique = true)
     private String activePatientId;
 
-    @Indexed(unique = true)
     private String assignedPatientId;
 
     public String getPatientRecordId() {

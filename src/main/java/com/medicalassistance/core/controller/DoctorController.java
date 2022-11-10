@@ -62,7 +62,7 @@ public class DoctorController {
 
     @RequestMapping(value = "/patient/appointments", method = RequestMethod.POST)
     public List<AppointmentListForDateResponse> getDoctorAppointmentsByDate(@Valid @RequestBody AppointmentListForDateRequest request) {
-        return doctorService.getCounselorAppointmentsByDate(request);
+        return doctorService.getDoctorAppointmentsByDate(request);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.POST)

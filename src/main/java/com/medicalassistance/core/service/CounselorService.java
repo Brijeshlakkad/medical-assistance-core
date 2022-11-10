@@ -20,13 +20,12 @@ import com.medicalassistance.core.response.AppointmentListForDateResponse;
 import com.medicalassistance.core.response.AppointmentResponse;
 import com.medicalassistance.core.response.CounselorDoctorCardResponse;
 import com.medicalassistance.core.response.PatientRecordResponse;
+import com.medicalassistance.core.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -63,36 +62,39 @@ public class CounselorService {
     PatientRecordRepository patientRecordRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
-        if (appointmentRequest.getStartDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)) ||
-                appointmentRequest.getStartDateTime().isEqual(ZonedDateTime.now()) ||
+        ZonedDateTime nowZonedDateTime = TimeUtil.nowUTC();
+        if (appointmentRequest.getStartDateTime().isBefore(nowZonedDateTime) ||
+                appointmentRequest.getStartDateTime().isEqual(nowZonedDateTime) ||
                 appointmentRequest.getStartDateTime().isAfter(appointmentRequest.getEndDateTime()) ||
                 appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())) {
             throw new InvalidUserRequestException("appointment time period invalid");
         }
-        if (patientRecordRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
-            if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(
-                    appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
-                    appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime()) ||
-                    appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEqualsOrEndDateTimeEquals(
-                            appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
-                            appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime())) {
-                throw new AlreadyExistsException("conflict: counselor has the reserved time slot during the provided time period");
-            }
-            // save counselor appointment
-            CounselorAppointment counselorAppointment = appointmentMapper.fromAppointmentRequestToCounselorAppointment(appointmentRequest);
-            counselorAppointment = appointmentRepository.save(counselorAppointment);
-
-            // update patient record
-            patientRecordService.afterAppointment(counselorAppointment, PatientRecordStatus.COUNSELOR_APPOINTMENT);
-            return;
+        if (!patientRecordRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
+            throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
         }
-        throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
+        if (appointmentRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
+            throw new AlreadyExistsException("patient already has reserved timeslot");
+        }
+        if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEquals(
+                appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                appointmentRequest.getStartDateTime()) ||
+                appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEquals(
+                        appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
+                        appointmentRequest.getEndDateTime())) {
+            throw new AlreadyExistsException("conflict: counselor has the reserved time slot during the provided time period");
+        }
+        // save counselor appointment
+        CounselorAppointment counselorAppointment = appointmentMapper.fromAppointmentRequestToCounselorAppointment(appointmentRequest);
+        counselorAppointment = appointmentRepository.save(counselorAppointment);
+
+        // update patient record
+        patientRecordService.afterAppointment(counselorAppointment, PatientRecordStatus.COUNSELOR_APPOINTMENT);
     }
 
     public Page<AppointmentResponse> getCounselorAppointments(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), ZonedDateTime.now(), pageable);
+        Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), TimeUtil.nowUTC(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
     }
