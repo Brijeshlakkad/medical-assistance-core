@@ -79,4 +79,9 @@ public class CounselorController {
     public void assignDoctorToPatient(@Valid @RequestBody DoctorAssignmentRequest doctorAssignmentRequest) {
         counselorService.assignDoctorToPatient(doctorAssignmentRequest);
     }
+
+    @RequestMapping(value = "/patient/{patientRecordId}", method = RequestMethod.DELETE)
+    public void rejectPatient(@PathVariable String patientRecordId) {
+        counselorService.rejectPatient(patientRecordId);
+    }
 }

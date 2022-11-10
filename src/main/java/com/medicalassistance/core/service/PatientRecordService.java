@@ -72,4 +72,10 @@ public class PatientRecordService {
         patientRecord.setStatus(PatientRecordStatus.DOCTOR_IN_PROGRESS);
         return patientRecordRepository.save(patientRecord);
     }
+
+    public PatientRecord afterRejectingPatient(PatientRecord patientRecord, PatientRecordStatus status) {
+        patientRecord.update();
+        patientRecord.setStatus(status);
+        return patientRecordRepository.save(patientRecord);
+    }
 }

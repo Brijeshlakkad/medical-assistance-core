@@ -3,19 +3,13 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.ActivePatient;
-import com.medicalassistance.core.entity.AssignedPatient;
-import com.medicalassistance.core.entity.CounselorAppointment;
-import com.medicalassistance.core.entity.User;
+import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.exception.AlreadyExistsException;
 import com.medicalassistance.core.exception.InvalidUserRequestException;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.mapper.AppointmentMapper;
 import com.medicalassistance.core.mapper.UserMapper;
-import com.medicalassistance.core.repository.ActivePatientRepository;
-import com.medicalassistance.core.repository.AssignedPatientRepository;
-import com.medicalassistance.core.repository.CounselorAppointmentRepository;
-import com.medicalassistance.core.repository.UserRepository;
+import com.medicalassistance.core.repository.*;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.DoctorAssignmentRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
@@ -56,6 +50,9 @@ public class CounselorService {
 
     @Autowired
     PatientService patientService;
+
+    @Autowired
+    PatientRecordRepository patientRecordRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
         if (appointmentRequest.getStartDateTime().isBefore(ZonedDateTime.now()) ||
@@ -134,5 +131,16 @@ public class CounselorService {
 
         // update patient record after assigning a doctor to active patient record
         patientRecordService.afterAssigningDoctor(assignedPatient, doctorAssignmentRequest.getActivePatientId());
+    }
+
+    public void rejectPatient(String activePatientId) {
+        ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
+        if (activePatient != null) {
+            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
+            activePatientRepository.delete(activePatient);
+
+            patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.DOCTOR_REJECTED);
+        }
+        throw new ResourceNotFoundException("patient record not found");
     }
 }

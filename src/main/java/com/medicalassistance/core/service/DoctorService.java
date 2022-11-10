@@ -103,13 +103,22 @@ public class DoctorService {
         return assignedPatientPage.map(assignedPatientMapper::toAssignedPatientResponse);
     }
 
-    public PatientRecordResponse getActivePatient(String activePatientId) {
-        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatientId);
+    public PatientRecordResponse getActivePatient(String patientRecordId) {
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
         PatientRecordResponse response = new PatientRecordResponse();
         response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
-        response.setRecordId(activePatientId);
+        response.setRecordId(patientRecordId);
         response.setCreatedAt(patientRecord.getCreatedAt());
         response.setAssessmentResult(patientService.getAssessmentResultId(patientRecord.getAssessmentResultId()));
         return response;
+    }
+
+    public void rejectPatient(String patientRecordId) {
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
+        if (patientRecord != null) {
+            assignedPatientRepository.deleteById(patientRecord.getAssignedPatientId());
+            patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.DOCTOR_REJECTED);
+        }
+        throw new ResourceNotFoundException("patient record not found");
     }
 }

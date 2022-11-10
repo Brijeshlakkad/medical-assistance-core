@@ -53,9 +53,9 @@ public class DoctorController {
         return doctorService.getAssignedPatients(paging);
     }
 
-    @RequestMapping(value = "/patient/{activePatientId}", method = RequestMethod.GET)
-    public PatientRecordResponse getPatientRecord(@PathVariable String activePatientId) {
-        return doctorService.getActivePatient(activePatientId);
+    @RequestMapping(value = "/patient/{patientRecordId}", method = RequestMethod.GET)
+    public PatientRecordResponse getPatientRecord(@PathVariable String patientRecordId) {
+        return doctorService.getActivePatient(patientRecordId);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.GET)
@@ -68,5 +68,10 @@ public class DoctorController {
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.POST)
     public void makeDoctorAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
         doctorService.storeDoctorAppointment(appointmentRequest);
+    }
+
+    @RequestMapping(value = "/patient/{patientRecordId}", method = RequestMethod.DELETE)
+    public void rejectPatient(@PathVariable String patientRecordId) {
+        doctorService.rejectPatient(patientRecordId);
     }
 }
