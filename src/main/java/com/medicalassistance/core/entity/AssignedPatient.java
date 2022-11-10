@@ -1,6 +1,7 @@
 package com.medicalassistance.core.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -13,6 +14,7 @@ public class AssignedPatient extends DateDomainObject {
 
     private String doctorRegistrationNumber;
 
+    @Indexed(unique = true)
     private String patientRecordId;
 
     private String counselorRegistrationNumber;

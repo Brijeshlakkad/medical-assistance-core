@@ -1,6 +1,7 @@
 package com.medicalassistance.core.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.ZonedDateTime;
 
@@ -11,6 +12,7 @@ public class Appointment extends DateDomainObject {
     @Id
     private String appointmentId;
 
+    @Indexed(unique = true)
     private String patientRecordId;
 
     private ZonedDateTime startDateTime;
