@@ -15,8 +15,6 @@ public class ActivePatient extends DateDomainObject {
     @Indexed(unique = true)
     private String patientId;
 
-    private String assessmentResultId;
-
     @Indexed(unique = true)
     private String patientRecordId;
 
@@ -34,14 +32,6 @@ public class ActivePatient extends DateDomainObject {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
-    }
-
-    public String getAssessmentResultId() {
-        return assessmentResultId;
-    }
-
-    public void setAssessmentResultId(String assessmentResultId) {
-        this.assessmentResultId = assessmentResultId;
     }
 
     public String getPatientRecordId() {

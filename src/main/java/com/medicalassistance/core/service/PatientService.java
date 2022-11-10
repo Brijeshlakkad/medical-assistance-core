@@ -53,7 +53,7 @@ public class PatientService {
         return activePatients.map(activePatientMapper::toPatientRecordCardResponse);
     }
 
-    public AssessmentResultResponse getAssessmentResultId(String assessmentResultId) {
+    public AssessmentResultResponse getAssessmentResult(String assessmentResultId) {
         AssessmentResultResponse assessmentResultResponse = new AssessmentResultResponse();
         AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(assessmentResultId);
         List<AttemptedQuestionResponse> attemptedQuestionResponses = new ArrayList<>();

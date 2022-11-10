@@ -109,7 +109,7 @@ public class DoctorService {
         response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
         response.setRecordId(patientRecordId);
         response.setCreatedAt(patientRecord.getCreatedAt());
-        response.setAssessmentResult(patientService.getAssessmentResultId(patientRecord.getAssessmentResultId()));
+        response.setAssessmentResult(patientService.getAssessmentResult(patientRecord.getAssessmentResultId()));
         return response;
     }
 

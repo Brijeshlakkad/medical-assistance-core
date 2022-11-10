@@ -38,19 +38,17 @@ public class PatientRecordService {
         // create an active patient record
         ActivePatient activePatient = new ActivePatient();
         activePatient.setPatientId(assessmentResult.getPatientId());
-        activePatient.setAssessmentResultId(assessmentResult.getAssessmentResultId());
         activePatient.setPatientRecordId(patientRecord.getPatientRecordId());
-        activePatientRepository.save(activePatient);
+        activePatient = activePatientRepository.save(activePatient);
 
-        return patientRecord;
+        patientRecord.setActivePatientId(activePatient.getActivePatientId());
+        return patientRecordRepository.save(patientRecord);
     }
 
     public PatientRecord afterAppointment(Appointment appointment, PatientRecordStatus status) {
         if (status == PatientRecordStatus.COUNSELOR_APPOINTMENT || status == PatientRecordStatus.DOCTOR_APPOINTMENT) {
-            ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getPatientRecordId());
-
             // update patient record (ActivePatient)
-            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
+            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(appointment.getPatientRecordId());
             patientRecord.update();
             patientRecord.setAppointmentId(appointment.getAppointmentId());
             patientRecord.setStatus(status);
@@ -59,14 +57,13 @@ public class PatientRecordService {
         return null;
     }
 
-    public PatientRecord afterAssigningDoctor(AssignedPatient assignedPatient, String activePatientId) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
+    public PatientRecord afterAssigningDoctor(AssignedPatient assignedPatient, PatientRecord patientRecord) {
+        ActivePatient activePatient = activePatientRepository.findByActivePatientId(patientRecord.getActivePatientId());
 
         // delete active patient
         activePatientRepository.delete(activePatient);
 
         // update patient record
-        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
         patientRecord.update();
         patientRecord.setAssignedPatientId(assignedPatient.getAssignedPatientId());
         patientRecord.setStatus(PatientRecordStatus.DOCTOR_IN_PROGRESS);

@@ -51,9 +51,9 @@ public class CounselorController {
         return patientService.getActivePatients(paging);
     }
 
-    @RequestMapping(value = "/patient/{activePatientId}", method = RequestMethod.GET)
-    public PatientRecordResponse getPatientRecord(@PathVariable String activePatientId) {
-        return counselorService.getActivePatient(activePatientId);
+    @RequestMapping(value = "/patient/{patientRecordId}", method = RequestMethod.GET)
+    public PatientRecordResponse getPatientRecord(@PathVariable String patientRecordId) {
+        return counselorService.getActivePatient(patientRecordId);
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.GET)
@@ -64,7 +64,7 @@ public class CounselorController {
     }
 
     @RequestMapping(value = "/patient/appointment", method = RequestMethod.POST)
-    public void makeDoctorAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
+    public void makeCounselorAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
         counselorService.storeCounselorAppointment(appointmentRequest);
     }
 

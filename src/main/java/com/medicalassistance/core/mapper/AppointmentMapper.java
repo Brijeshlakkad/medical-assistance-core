@@ -5,6 +5,7 @@ import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.repository.ActivePatientRepository;
+import com.medicalassistance.core.repository.PatientRecordRepository;
 import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.response.AppointmentResponse;
@@ -25,15 +26,18 @@ public class AppointmentMapper {
     @Autowired
     private UserCommonService userCommonService;
 
+    @Autowired
+    PatientRecordRepository patientRecordRepository;
+
     public AppointmentResponse toAppointmentResponse(Appointment appointment) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(appointment.getPatientRecordId());
-        if (activePatient != null) {
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(appointment.getPatientRecordId());
+        if (patientRecord != null) {
             AppointmentResponse appointmentResponse = new AppointmentResponse();
             appointmentResponse.setPatientRecordId(appointment.getPatientRecordId());
             appointmentResponse.setCreatedAt(appointment.getCreatedAt());
             appointmentResponse.setStartDateTime(appointment.getStartDateTime());
             appointmentResponse.setEndDateTime(appointment.getEndDateTime());
-            appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
+            appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
             return appointmentResponse;
         }
         throw new ResourceNotFoundException("active patient record doesn't found");

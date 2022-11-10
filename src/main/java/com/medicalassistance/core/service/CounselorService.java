@@ -61,7 +61,7 @@ public class CounselorService {
                 appointmentRequest.getStartDateTime().isEqual(appointmentRequest.getEndDateTime())) {
             throw new InvalidUserRequestException("appointment time period invalid");
         }
-        if (activePatientRepository.existsByActivePatientId(appointmentRequest.getPatientRecordId())) {
+        if (patientRecordRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
             if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEqualsOrStartDateTimeEquals(
                     appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
                     appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime()) ||
@@ -97,49 +97,48 @@ public class CounselorService {
         });
     }
 
-    public PatientRecordResponse getActivePatient(String activePatientId) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
+    public PatientRecordResponse getActivePatient(String patientRecordId) {
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
         PatientRecordResponse response = new PatientRecordResponse();
-        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
-        response.setRecordId(activePatientId);
-        response.setCreatedAt(activePatient.getCreatedAt());
-        response.setAssessmentResult(patientService.getAssessmentResultId(activePatient.getAssessmentResultId()));
+        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+        response.setRecordId(patientRecord.getPatientRecordId());
+        response.setCreatedAt(patientRecord.getCreatedAt());
+        response.setAssessmentResult(patientService.getAssessmentResult(patientRecord.getAssessmentResultId()));
         return response;
     }
 
     public void assignDoctorToPatient(DoctorAssignmentRequest doctorAssignmentRequest) {
         String counselorRegistrationNumber = userCommonService.getUser().getRegistrationNumber();
-        if (!activePatientRepository.existsByActivePatientId(doctorAssignmentRequest.getActivePatientId())) {
-            throw new ResourceNotFoundException(String.format("active patient record %s not found", doctorAssignmentRequest.getActivePatientId()));
+        if (!patientRecordRepository.existsByPatientRecordId(doctorAssignmentRequest.getActivePatientId())) {
+            throw new ResourceNotFoundException(String.format("patient record %s not found", doctorAssignmentRequest.getActivePatientId()));
         }
         if (!userRepository.existsByRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber())) {
             throw new ResourceNotFoundException(String.format("doctor with %s not found", doctorAssignmentRequest.getDoctorRegistrationNumber()));
         }
-        // check if the active patient record has already been assigned to a doctor
+        // check if the patient record has already been assigned to a doctor
         if (assignedPatientRepository.existsByPatientRecordId(doctorAssignmentRequest.getActivePatientId())) {
-            throw new AlreadyExistsException(String.format("active patient record %s is already assigned to a doctor", doctorAssignmentRequest.getActivePatientId()));
+            throw new AlreadyExistsException(String.format("patient record %s is already assigned to a doctor", doctorAssignmentRequest.getActivePatientId()));
         }
 
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(doctorAssignmentRequest.getActivePatientId());
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(doctorAssignmentRequest.getActivePatientId());
 
         // save assigned patient record
         AssignedPatient assignedPatient = new AssignedPatient();
-        assignedPatient.setPatientRecordId(activePatient.getPatientRecordId());
+        assignedPatient.setPatientRecordId(patientRecord.getPatientRecordId());
         assignedPatient.setDoctorRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber());
         assignedPatient.setCounselorRegistrationNumber(counselorRegistrationNumber);
         assignedPatient = assignedPatientRepository.save(assignedPatient);
 
         // update patient record after assigning a doctor to active patient record
-        patientRecordService.afterAssigningDoctor(assignedPatient, doctorAssignmentRequest.getActivePatientId());
+        patientRecordService.afterAssigningDoctor(assignedPatient, patientRecord);
     }
 
-    public void rejectPatient(String activePatientId) {
-        ActivePatient activePatient = activePatientRepository.findByActivePatientId(activePatientId);
-        if (activePatient != null) {
-            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(activePatient.getPatientRecordId());
-            activePatientRepository.delete(activePatient);
+    public void rejectPatient(String patientRecordId) {
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
+        if (patientRecord != null) {
+            activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
 
-            patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.DOCTOR_REJECTED);
+            patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.COUNSELOR_REJECTED);
         }
         throw new ResourceNotFoundException("patient record not found");
     }
