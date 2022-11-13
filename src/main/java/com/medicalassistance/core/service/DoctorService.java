@@ -85,12 +85,16 @@ public class DoctorService {
                         appointmentRequest.getEndDateTime())) {
             throw new AlreadyExistsException("conflict: doctor has the reserved time slot during the provided time period");
         }
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(appointmentRequest.getPatientRecordId());
+        if (patientRecord.getStatus() != PatientRecordStatus.DOCTOR_IN_PROGRESS) {
+            throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
+        }
         // save doctor appointment
         DoctorAppointment doctorAppointment = appointmentMapper.fromAppointmentRequestToDoctorAppointment(appointmentRequest);
         doctorAppointment = appointmentRepository.save(doctorAppointment);
 
         // update patient record
-        patientRecordService.afterAppointment(doctorAppointment, PatientRecordStatus.DOCTOR_APPOINTMENT);
+        patientRecordService.afterAppointment(doctorAppointment, patientRecord, PatientRecordStatus.DOCTOR_APPOINTMENT);
     }
 
     public Page<AppointmentResponse> getDoctorAppointments(Pageable pageable) {
@@ -130,8 +134,16 @@ public class DoctorService {
 
     public void rejectPatient(String patientRecordId) {
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
-        if (patientRecord != null) {
+        if (patientRecord != null &&
+                (patientRecord.getStatus() == PatientRecordStatus.DOCTOR_IN_PROGRESS || patientRecord.getStatus() == PatientRecordStatus.DOCTOR_APPOINTMENT)) {
             assignedPatientRepository.deleteById(patientRecord.getAssignedPatientId());
+
+            if (patientRecord.getAppointmentId() != null &&
+                    patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT) {
+                // delete doctor appointment
+                appointmentRepository.deleteByAppointmentId(patientRecord.getAppointmentId());
+            }
+
             patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.DOCTOR_REJECTED);
             return;
         }

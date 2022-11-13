@@ -45,10 +45,9 @@ public class PatientRecordService {
         return patientRecordRepository.save(patientRecord);
     }
 
-    public PatientRecord afterAppointment(Appointment appointment, PatientRecordStatus status) {
+    public PatientRecord afterAppointment(Appointment appointment, PatientRecord patientRecord, PatientRecordStatus status) {
         if (status == PatientRecordStatus.COUNSELOR_APPOINTMENT || status == PatientRecordStatus.DOCTOR_APPOINTMENT) {
             // update patient record (ActivePatient)
-            PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(appointment.getPatientRecordId());
             patientRecord.update();
             patientRecord.setAppointmentId(appointment.getAppointmentId());
             patientRecord.setStatus(status);

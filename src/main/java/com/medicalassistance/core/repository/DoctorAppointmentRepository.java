@@ -21,4 +21,6 @@ public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppoi
     DoctorAppointment findByAppointmentId(String appointmentId);
 
     boolean existsByPatientRecordId(String patientRecordId);
+
+    void deleteByAppointmentId(String appointmentId);
 }

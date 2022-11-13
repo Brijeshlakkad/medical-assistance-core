@@ -83,12 +83,16 @@ public class CounselorService {
                         appointmentRequest.getEndDateTime())) {
             throw new AlreadyExistsException("conflict: counselor has the reserved time slot during the provided time period");
         }
+        PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(appointmentRequest.getPatientRecordId());
+        if (patientRecord.getStatus() != PatientRecordStatus.COUNSELOR_IN_PROGRESS) {
+            throw new ResourceNotFoundException(String.format("patient record %s not found", appointmentRequest.getPatientRecordId()));
+        }
         // save counselor appointment
         CounselorAppointment counselorAppointment = appointmentMapper.fromAppointmentRequestToCounselorAppointment(appointmentRequest);
         counselorAppointment = appointmentRepository.save(counselorAppointment);
 
         // update patient record
-        patientRecordService.afterAppointment(counselorAppointment, PatientRecordStatus.COUNSELOR_APPOINTMENT);
+        patientRecordService.afterAppointment(counselorAppointment, patientRecord, PatientRecordStatus.COUNSELOR_APPOINTMENT);
     }
 
     public Page<AppointmentResponse> getCounselorAppointments(Pageable pageable) {
@@ -140,6 +144,10 @@ public class CounselorService {
         }
 
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(doctorAssignmentRequest.getActivePatientId());
+        if (patientRecord.getStatus() != PatientRecordStatus.COUNSELOR_IN_PROGRESS &&
+                patientRecord.getStatus() != PatientRecordStatus.COUNSELOR_APPOINTMENT) {
+            throw new ResourceNotFoundException(String.format("patient record %s not found", doctorAssignmentRequest.getActivePatientId()));
+        }
 
         // save assigned patient record
         AssignedPatient assignedPatient = new AssignedPatient();
@@ -154,8 +162,15 @@ public class CounselorService {
 
     public void rejectPatient(String patientRecordId) {
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
-        if (patientRecord != null) {
+        if (patientRecord != null &&
+                (patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_IN_PROGRESS || patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT)) {
             activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
+
+            if (patientRecord.getAppointmentId() != null &&
+                    patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT) {
+                // delete counselor appointment
+                appointmentRepository.deleteByAppointmentId(patientRecord.getAppointmentId());
+            }
 
             patientRecordService.afterRejectingPatient(patientRecord, PatientRecordStatus.COUNSELOR_REJECTED);
             return;
