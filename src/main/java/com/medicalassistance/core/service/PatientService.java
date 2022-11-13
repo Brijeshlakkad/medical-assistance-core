@@ -6,7 +6,10 @@ import com.medicalassistance.core.entity.*;
 import com.medicalassistance.core.mapper.ActivePatientMapper;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.*;
-import com.medicalassistance.core.response.*;
+import com.medicalassistance.core.response.AssessmentResultResponse;
+import com.medicalassistance.core.response.AttemptedQuestionResponse;
+import com.medicalassistance.core.response.PatientRecordCardResponse;
+import com.medicalassistance.core.response.PatientRecordStatusResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,8 +72,12 @@ public class PatientService {
 
     public PatientRecordStatusResponse getPatientRecordStatus() {
         String patientId = userCommonService.getUser().getUserId();
-        PatientRecord patientRecord = patientRecordRepository.findTop1ByPatientIdOrderByCreatedAtDesc(patientId);
         PatientRecordStatusResponse patientRecordStatusResponse = new PatientRecordStatusResponse();
+        PatientRecord patientRecord = patientRecordRepository.findTop1ByPatientIdOrderByCreatedAtDesc(patientId);
+        if (patientRecord == null) {
+            patientRecordStatusResponse.setPatientRecordStatus(PatientRecordStatus.NULL);
+            return patientRecordStatusResponse;
+        }
         patientRecordStatusResponse.setPatientRecordStatus(patientRecord.getStatus());
         patientRecordStatusResponse.setCreatedAt(patientRecord.getCreatedAt());
         patientRecordStatusResponse.setUpdatedAt(patientRecord.getUpdatedAt());
