@@ -64,6 +64,7 @@ public class DoctorService {
     PatientService patientService;
 
     public void storeDoctorAppointment(AppointmentRequest appointmentRequest) {
+        String doctorId = userCommonService.getUser().getUserId();
         ZonedDateTime nowZonedDateTime = TimeUtil.nowUTC();
         if (appointmentRequest.getStartDateTime().isBefore(nowZonedDateTime) ||
                 appointmentRequest.getStartDateTime().isEqual(nowZonedDateTime) ||
@@ -77,10 +78,12 @@ public class DoctorService {
         if (appointmentRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
             throw new AlreadyExistsException("patient already has reserved timeslot");
         }
-        if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEquals(
+        if (appointmentRepository.existsByDoctorIdAndStartDateTimeBetweenOrStartDateTimeEquals(
+                doctorId,
                 appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
                 appointmentRequest.getStartDateTime()) ||
-                appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEquals(
+                appointmentRepository.existsByDoctorIdAndEndDateTimeBetweenOrEndDateTimeEquals(
+                        doctorId,
                         appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
                         appointmentRequest.getEndDateTime())) {
             throw new AlreadyExistsException("conflict: doctor has the reserved time slot during the provided time period");

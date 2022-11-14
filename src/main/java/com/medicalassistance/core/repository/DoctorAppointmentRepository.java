@@ -14,9 +14,11 @@ public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppoi
 
     List<AppointmentListForDateResponse> findByDoctorIdAndStartDateTimeBetween(String counselorId, ZonedDateTime startDate, ZonedDateTime endDate);
 
-    boolean existsByStartDateTimeBetweenOrStartDateTimeEquals(ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
+    boolean existsByDoctorIdAndStartDateTimeBetweenOrStartDateTimeEquals(
+            String doctorId, ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
 
-    boolean existsByEndDateTimeBetweenOrEndDateTimeEquals(ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
+    boolean existsByDoctorIdAndEndDateTimeBetweenOrEndDateTimeEquals(
+            String doctorId, ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
 
     DoctorAppointment findByAppointmentId(String appointmentId);
 

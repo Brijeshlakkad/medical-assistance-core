@@ -62,6 +62,7 @@ public class CounselorService {
     PatientRecordRepository patientRecordRepository;
 
     public void storeCounselorAppointment(AppointmentRequest appointmentRequest) {
+        String counselorId = userCommonService.getUser().getUserId();
         ZonedDateTime nowZonedDateTime = TimeUtil.nowUTC();
         if (appointmentRequest.getStartDateTime().isBefore(nowZonedDateTime) ||
                 appointmentRequest.getStartDateTime().isEqual(nowZonedDateTime) ||
@@ -75,10 +76,12 @@ public class CounselorService {
         if (appointmentRepository.existsByPatientRecordId(appointmentRequest.getPatientRecordId())) {
             throw new AlreadyExistsException("patient already has reserved timeslot");
         }
-        if (appointmentRepository.existsByStartDateTimeBetweenOrStartDateTimeEquals(
+        if (appointmentRepository.existsByCounselorIdAndStartDateTimeBetweenOrStartDateTimeEquals(
+                counselorId,
                 appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
                 appointmentRequest.getStartDateTime()) ||
-                appointmentRepository.existsByEndDateTimeBetweenOrEndDateTimeEquals(
+                appointmentRepository.existsByCounselorIdAndEndDateTimeBetweenOrEndDateTimeEquals(
+                        counselorId,
                         appointmentRequest.getStartDateTime(), appointmentRequest.getEndDateTime(),
                         appointmentRequest.getEndDateTime())) {
             throw new AlreadyExistsException("conflict: counselor has the reserved time slot during the provided time period");

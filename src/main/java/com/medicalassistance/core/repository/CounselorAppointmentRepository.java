@@ -14,9 +14,9 @@ public interface CounselorAppointmentRepository extends MongoRepository<Counselo
 
     List<AppointmentListForDateResponse> findByCounselorIdAndStartDateTimeBetween(String counselorId, ZonedDateTime startDate, ZonedDateTime endDate);
 
-    boolean existsByStartDateTimeBetweenOrStartDateTimeEquals(ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
+    boolean existsByCounselorIdAndStartDateTimeBetweenOrStartDateTimeEquals(String counselorId, ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
 
-    boolean existsByEndDateTimeBetweenOrEndDateTimeEquals(ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
+    boolean existsByCounselorIdAndEndDateTimeBetweenOrEndDateTimeEquals(String counselorId, ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);
 
     CounselorAppointment findByAppointmentId(String appointmentId);
 
