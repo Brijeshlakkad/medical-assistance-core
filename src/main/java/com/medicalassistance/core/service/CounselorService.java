@@ -149,6 +149,12 @@ public class CounselorService {
             throw new ResourceNotFoundException(String.format("patient record %s not found", doctorAssignmentRequest.getActivePatientId()));
         }
 
+        // before forwarding to a doctor, delete any existing appointment with the counselor.
+        if (patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT &&
+                patientRecord.getAppointmentId() != null) {
+            appointmentRepository.deleteByAppointmentId(patientRecord.getAppointmentId());
+        }
+
         // save assigned patient record
         AssignedPatient assignedPatient = new AssignedPatient();
         assignedPatient.setPatientRecordId(patientRecord.getPatientRecordId());
