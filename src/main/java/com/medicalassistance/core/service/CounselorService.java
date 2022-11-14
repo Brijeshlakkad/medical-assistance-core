@@ -160,6 +160,7 @@ public class CounselorService {
         assignedPatient.setPatientRecordId(patientRecord.getPatientRecordId());
         assignedPatient.setDoctorRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber());
         assignedPatient.setCounselorRegistrationNumber(counselorRegistrationNumber);
+        assignedPatient.setPatientId(patientRecord.getPatientId());
         assignedPatient = assignedPatientRepository.save(assignedPatient);
 
         // update patient record after assigning a doctor to active patient record

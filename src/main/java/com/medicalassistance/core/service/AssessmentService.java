@@ -39,6 +39,9 @@ public class AssessmentService {
     @Autowired
     PatientRecordService patientRecordService;
 
+    @Autowired
+    AssignedPatientRepository assignedPatientRepository;
+
     public AssessmentResponse getAssessment(String assessmentId) {
         AssessmentResponse response = new AssessmentResponse();
         Assessment assessment = assessmentRepository.findByAssessmentId(assessmentId);
@@ -51,7 +54,8 @@ public class AssessmentService {
     public void storeAssessmentResult(String assessmentId, AssessmentResultRequest assessmentRequest) {
         String userId = userCommonService.getUser().getUserId();
 
-        if (activePatientRepository.existsByPatientId(userId)) {
+        if (activePatientRepository.existsByPatientId(userId) ||
+                assignedPatientRepository.existsByPatientId(userId)) {
             throw new AlreadyExistsException("You already have an active patient file with us!");
         }
 

@@ -11,4 +11,6 @@ public interface AssignedPatientRepository extends MongoRepository<AssignedPatie
     boolean existsByPatientRecordId(String patientRecordId);
 
     Integer countByDoctorRegistrationNumber(String doctorRegistrationNumber);
+
+    boolean existsByPatientId(String patientId);
 }

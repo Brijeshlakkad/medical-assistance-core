@@ -15,6 +15,9 @@ public class AssignedPatient extends DateDomainObject {
     private String doctorRegistrationNumber;
 
     @Indexed(unique = true)
+    private String patientId;
+
+    @Indexed(unique = true)
     private String patientRecordId;
 
     private String counselorRegistrationNumber;
@@ -33,6 +36,14 @@ public class AssignedPatient extends DateDomainObject {
 
     public void setDoctorRegistrationNumber(String doctorRegistrationNumber) {
         this.doctorRegistrationNumber = doctorRegistrationNumber;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public String getPatientRecordId() {
