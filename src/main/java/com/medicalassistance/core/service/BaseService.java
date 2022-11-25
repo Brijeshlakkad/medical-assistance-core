@@ -128,7 +128,7 @@ public class BaseService {
 
     public LoginResponse createSuccessLoginResponse(User savedUser) {
         LoginResponse response = new LoginResponse();
-        response.setUser(userMapper.toUserCardResponse(savedUser));
+        response.setUser(userMapper.toUserResponse(savedUser));
         response.setLoginSuccess(true);
         JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(savedUser.getEmailAddress());
         response.setAccessToken(jwtTokenUtil.generateToken(userDetails));

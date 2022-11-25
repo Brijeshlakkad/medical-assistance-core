@@ -16,10 +16,7 @@ import com.medicalassistance.core.repository.*;
 import com.medicalassistance.core.request.AppointmentListForDateRequest;
 import com.medicalassistance.core.request.AppointmentRequest;
 import com.medicalassistance.core.request.DoctorAssignmentRequest;
-import com.medicalassistance.core.response.AppointmentListForDateResponse;
-import com.medicalassistance.core.response.AppointmentResponse;
-import com.medicalassistance.core.response.CounselorDoctorCardResponse;
-import com.medicalassistance.core.response.PatientRecordResponse;
+import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -116,17 +113,15 @@ public class CounselorService {
     }
 
     public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {
-        Page<CounselorDoctorCardResponse> page = userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
-        return page.map((CounselorDoctorCardResponse doctorRecord) -> {
-            doctorRecord.setCurrentPatients(assignedPatientRepository.countByDoctorRegistrationNumber(doctorRecord.getRegistrationNumber()));
-            return doctorRecord;
-        });
+        Page<User> page = userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
+
+        return page.map(userMapper::toCounselorDoctorCardResponse);
     }
 
     public PatientRecordResponse getActivePatient(String patientRecordId) {
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
         PatientRecordResponse response = new PatientRecordResponse();
-        response.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+        response.setPatient(userMapper.toUserResponse(userRepository.findByUserId(patientRecord.getPatientId())));
         response.setRecordId(patientRecord.getPatientRecordId());
         response.setCreatedAt(patientRecord.getCreatedAt());
         response.setAssessmentResult(patientService.getAssessmentResult(patientRecord.getAssessmentResultId()));

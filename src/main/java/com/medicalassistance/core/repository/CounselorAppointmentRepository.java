@@ -23,4 +23,6 @@ public interface CounselorAppointmentRepository extends MongoRepository<Counselo
     boolean existsByPatientRecordId(String patientRecordId);
 
     void deleteByAppointmentId(String appointmentId);
+
+    Integer countByCounselorId(String counselorId);
 }

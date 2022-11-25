@@ -4,7 +4,7 @@ public class LoginResponse {
     boolean loginSuccess;
     String accessToken;
     String errorMessage;
-    UserCardResponse user;
+    UserResponse user;
 
     public LoginResponse() {
 
@@ -49,11 +49,11 @@ public class LoginResponse {
         this.errorMessage = errorMessage;
     }
 
-    public UserCardResponse getUser() {
+    public UserResponse getUser() {
         return user;
     }
 
-    public void setUser(UserCardResponse user) {
+    public void setUser(UserResponse user) {
         this.user = user;
     }
 }

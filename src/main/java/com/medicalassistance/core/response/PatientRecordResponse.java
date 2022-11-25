@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 public class PatientRecordResponse {
     String recordId;
-    UserCardResponse patient;
+    UserResponse patient;
     ZonedDateTime createdAt;
     AssessmentResultResponse assessmentResult;
 
@@ -16,11 +16,11 @@ public class PatientRecordResponse {
         this.recordId = recordId;
     }
 
-    public UserCardResponse getPatient() {
+    public UserResponse getPatient() {
         return patient;
     }
 
-    public void setPatient(UserCardResponse patient) {
+    public void setPatient(UserResponse patient) {
         this.patient = patient;
     }
 

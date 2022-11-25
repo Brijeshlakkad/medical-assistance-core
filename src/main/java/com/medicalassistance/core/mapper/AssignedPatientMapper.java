@@ -37,7 +37,7 @@ public class AssignedPatientMapper {
 
             appointmentResponse.setPatientRecordId(assignedPatient.getPatientRecordId());
             appointmentResponse.setCounselor(userRepository.findFirstByRegistrationNumber(assignedPatient.getCounselorRegistrationNumber()));
-            appointmentResponse.setPatient(userMapper.toPatientCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+            appointmentResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(patientRecord.getPatientId())));
 
             AssessmentResult assessmentResult = assessmentResultRepository.findByAssessmentResultId(patientRecord.getAssessmentResultId());
             appointmentResponse.setAssessmentCreatedAt(assessmentResult.getCreatedAt());

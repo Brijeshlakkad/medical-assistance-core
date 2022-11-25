@@ -2,18 +2,9 @@ package com.medicalassistance.core.response;
 
 import java.time.ZonedDateTime;
 
-public class PatientRecordCardResponse {
-    String patientRecordId;
+public class AdminPatientCard {
     UserCardResponse patient;
     ZonedDateTime assessmentCreatedAt;
-
-    public String getPatientRecordId() {
-        return patientRecordId;
-    }
-
-    public void setPatientRecordId(String patientRecordId) {
-        this.patientRecordId = patientRecordId;
-    }
 
     public UserCardResponse getPatient() {
         return patient;

@@ -10,7 +10,7 @@ public interface ActivePatientRepository extends MongoRepository<ActivePatient, 
 
     ActivePatient findByActivePatientId(String activePatientId);
 
-    ActivePatient findByPatientId(String activePatientId);
+    ActivePatient findByPatientId(String patientId);
 
     boolean existsByActivePatientId(String activePatientId);
 

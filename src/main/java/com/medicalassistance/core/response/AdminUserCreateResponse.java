@@ -3,7 +3,7 @@ package com.medicalassistance.core.response;
 public class AdminUserCreateResponse {
     boolean success;
     String errorMessage;
-    UserCardResponse user;
+    UserResponse user;
 
     public boolean isSuccess() {
         return success;
@@ -21,11 +21,11 @@ public class AdminUserCreateResponse {
         this.errorMessage = errorMessage;
     }
 
-    public UserCardResponse getUser() {
+    public UserResponse getUser() {
         return user;
     }
 
-    public void setUser(UserCardResponse user) {
+    public void setUser(UserResponse user) {
         this.user = user;
     }
 }

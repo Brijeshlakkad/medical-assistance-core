@@ -58,12 +58,12 @@ public class PatientController {
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public UserCardResponse getProfileCard() {
+    public UserResponse getProfileCard() {
         return userService.getProfileCard();
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.PATCH)
-    public UserCardResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
+    public UserResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
         return userService.updateProfile(userUpdateRequest);
     }
 
