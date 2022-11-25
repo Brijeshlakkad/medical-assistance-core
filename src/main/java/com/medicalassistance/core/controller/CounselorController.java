@@ -7,6 +7,7 @@ import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.BaseService;
 import com.medicalassistance.core.service.CounselorService;
 import com.medicalassistance.core.service.PatientService;
+import com.medicalassistance.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,9 @@ public class CounselorController {
 
     @Autowired
     private CounselorService counselorService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
@@ -86,5 +90,15 @@ public class CounselorController {
     @RequestMapping(value = "/patient/{patientRecordId}", method = RequestMethod.DELETE)
     public void rejectPatient(@PathVariable String patientRecordId) {
         counselorService.rejectPatient(patientRecordId);
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public UserCardResponse getProfileCard() {
+        return userService.getProfileCard();
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.PATCH)
+    public UserCardResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
+        return userService.updateProfile(userUpdateRequest);
     }
 }

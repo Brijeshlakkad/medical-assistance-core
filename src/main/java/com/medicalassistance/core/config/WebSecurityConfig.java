@@ -72,13 +72,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/doctor/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/doctor/signup").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/patient/profile").access("hasRole('ROLE_PATIENT')")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/patient/profile").access("hasRole('ROLE_PATIENT')")
                 .antMatchers("/api/v1/patient/assessment/*").access("hasRole('ROLE_PATIENT')")
                 .antMatchers(HttpMethod.GET, "/api/v1/patient/status").access("hasRole('ROLE_PATIENT')")
                 .antMatchers("/api/v1/counselor/patient").access("hasRole('ROLE_COUNSELOR')")
                 .antMatchers("/api/v1/counselor/patient/**").access("hasRole('ROLE_COUNSELOR')")
                 .antMatchers("/api/v1/counselor/doctor").access("hasRole('ROLE_COUNSELOR')")
+                .antMatchers(HttpMethod.GET, "/api/v1/counselor/profile").access("hasRole('ROLE_COUNSELOR')")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/counselor/profile").access("hasRole('ROLE_COUNSELOR')")
                 .antMatchers("/api/v1/doctor/patient").access("hasRole('ROLE_DOCTOR')")
-                .antMatchers("/api/v1/doctor/patient/**").access("hasRole('ROLE_DOCTOR')");
+                .antMatchers("/api/v1/doctor/patient/**").access("hasRole('ROLE_DOCTOR')")
+                .antMatchers(HttpMethod.GET, "/api/v1/doctor/profile").access("hasRole('ROLE_DOCTOR')")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/doctor/profile").access("hasRole('ROLE_DOCTOR')");
 
         // Custom JWT based security filter
         JwtAuthorizationTokenFilter authenticationTokenFilter = new JwtAuthorizationTokenFilter(userDetailsService(),

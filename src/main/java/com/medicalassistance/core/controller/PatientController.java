@@ -4,6 +4,7 @@ import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.request.AssessmentResultRequest;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
+import com.medicalassistance.core.request.UserUpdateRequest;
 import com.medicalassistance.core.response.AssessmentResponse;
 import com.medicalassistance.core.response.LoginResponse;
 import com.medicalassistance.core.response.PatientRecordStatusResponse;
@@ -47,11 +48,6 @@ public class PatientController {
         return baseService.signUp(request, AuthorityName.ROLE_PATIENT);
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public UserCardResponse getProfileCard() {
-        return userService.getProfileCard();
-    }
-
     @RequestMapping(value = "/assessment/{assessmentId}", method = RequestMethod.GET)
     public AssessmentResponse getAssessment(@PathVariable String assessmentId) {
         return assessmentService.getAssessment(assessmentId);
@@ -65,5 +61,15 @@ public class PatientController {
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public PatientRecordStatusResponse getStatus() {
         return patientService.getPatientRecordStatus();
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public UserCardResponse getProfileCard() {
+        return userService.getProfileCard();
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.PATCH)
+    public UserCardResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
+        return userService.updateProfile(userUpdateRequest);
     }
 }

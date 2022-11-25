@@ -1,14 +1,12 @@
 package com.medicalassistance.core.controller;
 
 import com.medicalassistance.core.common.AuthorityName;
-import com.medicalassistance.core.request.AppointmentListForDateRequest;
-import com.medicalassistance.core.request.AppointmentRequest;
-import com.medicalassistance.core.request.LoginRequest;
-import com.medicalassistance.core.request.UserRequest;
+import com.medicalassistance.core.request.*;
 import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.BaseService;
 import com.medicalassistance.core.service.DoctorService;
+import com.medicalassistance.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +28,9 @@ public class DoctorController {
 
     @Autowired
     private DoctorService doctorService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
@@ -73,5 +74,16 @@ public class DoctorController {
     @RequestMapping(value = "/patient/{patientRecordId}", method = RequestMethod.DELETE)
     public void rejectPatient(@PathVariable String patientRecordId) {
         doctorService.rejectPatient(patientRecordId);
+    }
+
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public UserCardResponse getProfileCard() {
+        return userService.getProfileCard();
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.PATCH)
+    public UserCardResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
+        return userService.updateProfile(userUpdateRequest);
     }
 }
