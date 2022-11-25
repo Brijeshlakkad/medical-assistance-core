@@ -101,4 +101,10 @@ public class CounselorController {
     public UserCardResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
         return userService.updateProfile(userUpdateRequest);
     }
+
+    @RequestMapping(value = "/update-password", method = RequestMethod.POST)
+    UpdatePasswordResponse createPasswordResetRequest(
+            @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        return baseService.updatePassword(updatePasswordRequest);
+    }
 }

@@ -1,14 +1,8 @@
 package com.medicalassistance.core.controller;
 
 import com.medicalassistance.core.common.AuthorityName;
-import com.medicalassistance.core.request.AssessmentResultRequest;
-import com.medicalassistance.core.request.LoginRequest;
-import com.medicalassistance.core.request.UserRequest;
-import com.medicalassistance.core.request.UserUpdateRequest;
-import com.medicalassistance.core.response.AssessmentResponse;
-import com.medicalassistance.core.response.LoginResponse;
-import com.medicalassistance.core.response.PatientRecordStatusResponse;
-import com.medicalassistance.core.response.UserCardResponse;
+import com.medicalassistance.core.request.*;
+import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.security.JwtTokenUtil;
 import com.medicalassistance.core.service.AssessmentService;
 import com.medicalassistance.core.service.BaseService;
@@ -71,5 +65,11 @@ public class PatientController {
     @RequestMapping(value = "/profile", method = RequestMethod.PATCH)
     public UserCardResponse updateProfile(@RequestBody UserUpdateRequest userUpdateRequest) {
         return userService.updateProfile(userUpdateRequest);
+    }
+
+    @RequestMapping(value = "/update-password", method = RequestMethod.POST)
+    UpdatePasswordResponse createPasswordResetRequest(
+            @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        return baseService.updatePassword(updatePasswordRequest);
     }
 }
