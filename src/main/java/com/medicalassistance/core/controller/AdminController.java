@@ -102,4 +102,9 @@ public class AdminController {
     public void removeDoctor(@PathVariable String email) {
         adminService.removeDoctor(email);
     }
+
+    @RequestMapping(value = "/reset", method = RequestMethod.DELETE)
+    public void resetUsers() {
+        adminService.resetUsers();
+    }
 }

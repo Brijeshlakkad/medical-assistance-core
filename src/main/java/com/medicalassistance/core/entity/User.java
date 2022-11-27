@@ -47,7 +47,7 @@ public class User {
 
     private Date modifiedAt;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
     public String getUserId() {
         return userId;
