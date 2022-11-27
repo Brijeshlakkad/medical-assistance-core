@@ -113,7 +113,7 @@ public class CounselorService {
     }
 
     public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {
-        Page<User> page = userRepository.findByAuthoritiesContains(AuthorityName.ROLE_DOCTOR, pageable);
+        Page<User> page = userRepository.findByAuthoritiesContainsOrderByModifiedAt(AuthorityName.ROLE_DOCTOR, pageable);
 
         return page.map(userMapper::toCounselorDoctorCardResponse);
     }

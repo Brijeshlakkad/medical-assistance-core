@@ -13,4 +13,6 @@ public interface AssignedPatientRepository extends MongoRepository<AssignedPatie
     Integer countByDoctorRegistrationNumber(String doctorRegistrationNumber);
 
     boolean existsByPatientId(String patientId);
+
+    Integer countBy();
 }

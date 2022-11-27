@@ -25,4 +25,6 @@ public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppoi
     boolean existsByPatientRecordId(String patientRecordId);
 
     void deleteByAppointmentId(String appointmentId);
+
+    Integer countByStartDateTimeAfter(ZonedDateTime currentDateTime);
 }

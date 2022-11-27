@@ -17,4 +17,6 @@ public interface ActivePatientRepository extends MongoRepository<ActivePatient, 
     boolean existsByPatientId(String patientId);
 
     void deleteByActivePatientId(String activePatientId);
+
+    Integer countBy();
 }
