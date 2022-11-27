@@ -3,6 +3,7 @@ package com.medicalassistance.core.service;
 import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.entity.Assessment;
 import com.medicalassistance.core.entity.User;
+import com.medicalassistance.core.exception.ResourceNotFoundException;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.*;
 import com.medicalassistance.core.request.UserRequest;
@@ -48,17 +49,17 @@ public class AdminService {
     }
 
     public Page<AdminPatientCard> getPatients(Pageable pageable) {
-        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsOrderByModifiedAt(AuthorityName.ROLE_PATIENT, pageable);
+        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsAndDeletedFalseOrderByModifiedAt(AuthorityName.ROLE_PATIENT, pageable);
         return patientCardPage.map(userMapper::toAdminPatientCard);
     }
 
     public Page<AdminCounselorCard> getCounselors(Pageable pageable) {
-        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsOrderByModifiedAt(AuthorityName.ROLE_PATIENT, pageable);
+        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsAndDeletedFalseOrderByModifiedAt(AuthorityName.ROLE_COUNSELOR, pageable);
         return patientCardPage.map(userMapper::toAdminCounselorCard);
     }
 
     public Page<AdminDoctorCard> getDoctors(Pageable pageable) {
-        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsOrderByModifiedAt(AuthorityName.ROLE_PATIENT, pageable);
+        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsAndDeletedFalseOrderByModifiedAt(AuthorityName.ROLE_DOCTOR, pageable);
         return patientCardPage.map(userMapper::toAdminDoctorCard);
     }
 
@@ -84,6 +85,28 @@ public class AdminService {
         return response;
     }
 
+    public void removePatient(String emailAddress) {
+        removeUser(emailAddress, AuthorityName.ROLE_PATIENT);
+    }
+
+    public void removeCounselor(String emailAddress) {
+        removeUser(emailAddress, AuthorityName.ROLE_COUNSELOR);
+    }
+
+    public void removeDoctor(String emailAddress) {
+        removeUser(emailAddress, AuthorityName.ROLE_DOCTOR);
+    }
+
+    private void removeUser(String emailAddress, AuthorityName authorityName) {
+        User user = userRepository.findByEmailAddressAndAuthoritiesContainsAndDeletedFalse(emailAddress, Collections.singleton(authorityName));
+        if (user != null) {
+            user.setDeleted(true);
+            userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("user not found!");
+        }
+    }
+
     public AdminPatientReport getAdminPatientReport(Date startDateTime, Date endDateTime, Pageable pageable) {
         //        Date currentWeekStart, currentWeekEnd;
         //        Calendar currentCalendar = Calendar.getInstance();
@@ -99,7 +122,7 @@ public class AdminService {
         //        ZonedDateTime weekEndDateTime = ZonedDateTime.ofInstant(currentWeekEnd.toInstant(), ZoneOffset.UTC);
 
         AdminPatientReport report = new AdminPatientReport();
-        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsAndCreatedAtBetweenOrderByCreatedAt
+        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsAndCreatedAtBetweenAndDeletedFalseOrderByCreatedAt
                 (Collections.singleton(AuthorityName.ROLE_PATIENT),
                         startDateTime,
                         endDateTime,

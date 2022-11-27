@@ -129,7 +129,7 @@ public class JwtTokenUtil {
         Set<AuthorityName> roles = new HashSet<AuthorityName>();
         String userId = this.getLoggedInUserID();
         if (!Objects.equals(userId, "")) {
-            User user = userRepository.findByUserId(userId);
+            User user = userRepository.findByUserIdAndDeletedFalse(userId);
             if (user != null && user.getAuthorities() != null && user.getAuthorities().size() > 0) {
                 roles.addAll(user.getAuthorities());
             }

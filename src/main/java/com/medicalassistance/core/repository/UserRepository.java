@@ -7,24 +7,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Set;
 
 public interface UserRepository extends MongoRepository<User, String> {
-    User findByUserId(String userId);
+    User findByUserIdAndDeletedFalse(String userId);
 
-    User findByEmailAddress(String emailAddress);
+    User findByEmailAddressAndDeletedFalse(String emailAddress);
 
-    boolean existsByEmailAddress(String emailAddress);
+    User findByEmailAddressAndAuthoritiesContainsAndDeletedFalse(String emailAddress, Set<AuthorityName> authorityNames);
 
-    boolean existsByUserId(String userId);
+    boolean existsByEmailAddressAndDeletedFalse(String emailAddress);
 
-    Page<User> findByAuthoritiesContainsOrderByModifiedAt(AuthorityName authorities, Pageable pageable);
+    boolean existsByUserIdAndDeletedFalse(String userId);
 
-    Page<User> findByAuthoritiesContainsAndCreatedAtBetweenOrderByCreatedAt(Set<AuthorityName> authorities, Date createdAt, Date createdAt2, Pageable pageable);
+    Page<User> findByAuthoritiesContainsAndDeletedFalseOrderByModifiedAt(AuthorityName authorities, Pageable pageable);
 
-    boolean existsByRegistrationNumber(String registrationNumber);
+    Page<User> findByAuthoritiesContainsAndCreatedAtBetweenAndDeletedFalseOrderByCreatedAt(Set<AuthorityName> authorities, Date createdAt, Date createdAt2, Pageable pageable);
 
-    CounselorDoctorCardResponse findFirstByRegistrationNumber(String registrationNumber);
+    boolean existsByRegistrationNumberAndDeletedFalse(String registrationNumber);
+
+    CounselorDoctorCardResponse findFirstByRegistrationNumberAndDeletedFalse(String registrationNumber);
 }

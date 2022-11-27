@@ -87,4 +87,19 @@ public class AdminController {
                 new Date(endDateTime),
                 paging);
     }
+
+    @RequestMapping(value = "/patient/{email}", method = RequestMethod.DELETE)
+    public void removePatient(@PathVariable String email) {
+        adminService.removePatient(email);
+    }
+
+    @RequestMapping(value = "/counselor/{email}", method = RequestMethod.DELETE)
+    public void removeCounselor(@PathVariable String email) {
+        adminService.removeCounselor(email);
+    }
+
+    @RequestMapping(value = "/doctor/{email}", method = RequestMethod.DELETE)
+    public void removeDoctor(@PathVariable String email) {
+        adminService.removeDoctor(email);
+    }
 }

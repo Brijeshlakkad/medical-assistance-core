@@ -3,7 +3,7 @@ package com.medicalassistance.core.mapper;
 
 import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.common.UserCommonService;
-import com.medicalassistance.core.entity.ActivePatient;
+import com.medicalassistance.core.converter.ZonedDateTimeReadConverter;
 import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.repository.ActivePatientRepository;
 import com.medicalassistance.core.repository.AssignedPatientRepository;
@@ -33,6 +33,9 @@ public class UserMapper {
 
     @Autowired
     CounselorAppointmentRepository counselorAppointmentRepository;
+
+    @Autowired
+    ZonedDateTimeReadConverter readConverter;
 
     public User fromPatientRequest(UserRequest userRequest) {
         User user = new User();
@@ -106,25 +109,20 @@ public class UserMapper {
     }
 
     public AdminPatientCard toAdminPatientCard(User user) {
-        AdminPatientCard adminPatientCard = new AdminPatientCard();
-        adminPatientCard.setPatient(toUserCardResponse(user));
-        ActivePatient activePatient = activePatientRepository.findByPatientId(user.getUserId());
-        if (activePatient != null)
-            adminPatientCard.setAssessmentCreatedAt(activePatient.getCreatedAt());
+        AdminPatientCard adminPatientCard = new AdminPatientCard(toUserCardResponse(user));
+        adminPatientCard.setCreatedAt(readConverter.convert(user.getCreatedAt().getTime()));
         return adminPatientCard;
     }
 
     public AdminCounselorCard toAdminCounselorCard(User user) {
-        AdminCounselorCard adminCounselorCard = new AdminCounselorCard();
-        adminCounselorCard.setCounselor(toUserCardResponse(user));
-        adminCounselorCard.setCurrentPatients(counselorAppointmentRepository.countByCounselorId(user.getUserId()));
+        AdminCounselorCard adminCounselorCard = new AdminCounselorCard(toUserCardResponse(user));
+        adminCounselorCard.setCreatedAt(readConverter.convert(user.getCreatedAt().getTime()));
         return adminCounselorCard;
     }
 
     public AdminDoctorCard toAdminDoctorCard(User user) {
-        AdminDoctorCard adminDoctorCard = new AdminDoctorCard();
-        adminDoctorCard.setDoctor(toUserCardResponse(user));
-        adminDoctorCard.setCurrentPatients(assignedPatientRepository.countByDoctorRegistrationNumber(user.getRegistrationNumber()));
+        AdminDoctorCard adminDoctorCard = new AdminDoctorCard(toUserCardResponse(user));
+        adminDoctorCard.setCreatedAt(readConverter.convert(user.getCreatedAt().getTime()));
         return adminDoctorCard;
     }
 }

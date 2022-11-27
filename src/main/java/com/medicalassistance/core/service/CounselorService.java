@@ -113,7 +113,7 @@ public class CounselorService {
     }
 
     public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {
-        Page<User> page = userRepository.findByAuthoritiesContainsOrderByModifiedAt(AuthorityName.ROLE_DOCTOR, pageable);
+        Page<User> page = userRepository.findByAuthoritiesContainsAndDeletedFalseOrderByModifiedAt(AuthorityName.ROLE_DOCTOR, pageable);
 
         return page.map(userMapper::toCounselorDoctorCardResponse);
     }
@@ -121,7 +121,7 @@ public class CounselorService {
     public PatientRecordResponse getActivePatient(String patientRecordId) {
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
         PatientRecordResponse response = new PatientRecordResponse();
-        response.setPatient(userMapper.toUserResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+        response.setPatient(userMapper.toUserResponse(userRepository.findByUserIdAndDeletedFalse(patientRecord.getPatientId())));
         response.setRecordId(patientRecord.getPatientRecordId());
         response.setCreatedAt(patientRecord.getCreatedAt());
         response.setAssessmentResult(patientService.getAssessmentResult(patientRecord.getAssessmentResultId()));
@@ -133,7 +133,7 @@ public class CounselorService {
         if (!patientRecordRepository.existsByPatientRecordId(doctorAssignmentRequest.getActivePatientId())) {
             throw new ResourceNotFoundException(String.format("patient record %s not found", doctorAssignmentRequest.getActivePatientId()));
         }
-        if (!userRepository.existsByRegistrationNumber(doctorAssignmentRequest.getDoctorRegistrationNumber())) {
+        if (!userRepository.existsByRegistrationNumberAndDeletedFalse(doctorAssignmentRequest.getDoctorRegistrationNumber())) {
             throw new ResourceNotFoundException(String.format("doctor with %s not found", doctorAssignmentRequest.getDoctorRegistrationNumber()));
         }
         // check if the patient record has already been assigned to a doctor

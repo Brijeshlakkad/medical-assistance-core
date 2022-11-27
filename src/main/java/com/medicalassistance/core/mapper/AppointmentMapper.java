@@ -37,7 +37,7 @@ public class AppointmentMapper {
             appointmentResponse.setCreatedAt(appointment.getCreatedAt());
             appointmentResponse.setStartDateTime(appointment.getStartDateTime());
             appointmentResponse.setEndDateTime(appointment.getEndDateTime());
-            appointmentResponse.setPatient(userMapper.toUserResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+            appointmentResponse.setPatient(userMapper.toUserResponse(userRepository.findByUserIdAndDeletedFalse(patientRecord.getPatientId())));
             return appointmentResponse;
         }
         throw new ResourceNotFoundException("active patient record doesn't found");

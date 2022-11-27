@@ -128,7 +128,7 @@ public class DoctorService {
     public PatientRecordResponse getActivePatient(String patientRecordId) {
         PatientRecord patientRecord = patientRecordRepository.findByPatientRecordId(patientRecordId);
         PatientRecordResponse response = new PatientRecordResponse();
-        response.setPatient(userMapper.toUserResponse(userRepository.findByUserId(patientRecord.getPatientId())));
+        response.setPatient(userMapper.toUserResponse(userRepository.findByUserIdAndDeletedFalse(patientRecord.getPatientId())));
         response.setRecordId(patientRecordId);
         response.setCreatedAt(patientRecord.getCreatedAt());
         response.setAssessmentResult(patientService.getAssessmentResult(patientRecord.getAssessmentResultId()));

@@ -17,7 +17,7 @@ public class UserCommonService {
 
     public User getUser() {
         String userId = jwtTokenUtil.getLoggedInUserID();
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserIdAndDeletedFalse(userId);
         if (user != null) {
             return user;
         } else {

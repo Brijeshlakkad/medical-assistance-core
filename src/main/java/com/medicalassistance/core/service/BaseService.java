@@ -44,7 +44,7 @@ public class BaseService {
         if (request == null) {
             return createErrorLoginResponse();
         }
-        User savedUser = userRepository.findByEmailAddress(request.getEmailId());
+        User savedUser = userRepository.findByEmailAddressAndDeletedFalse(request.getEmailId());
         if (savedUser != null && savedUser.getAuthorities().contains(authorityName)) {
             if (checkValidLogin(savedUser, request.getPassword())) {
                 return this.createSuccessLoginResponse(savedUser);
@@ -87,7 +87,7 @@ public class BaseService {
                 return this.createErrorLoginResponse("invalid registration number");
             }
             // check if the registration number is unique
-            if (userRepository.existsByRegistrationNumber(user.getRegistrationNumber())) {
+            if (userRepository.existsByRegistrationNumberAndDeletedFalse(user.getRegistrationNumber())) {
                 return this.createErrorLoginResponse("registration number is already in use");
             }
         }
@@ -117,7 +117,7 @@ public class BaseService {
     }
 
     private boolean checkIfEmailIsTaken(String email) {
-        return userRepository.existsByEmailAddress(email);
+        return userRepository.existsByEmailAddressAndDeletedFalse(email);
     }
 
     public void checkIfEmailIsTakenWithException(String email) {
@@ -153,7 +153,7 @@ public class BaseService {
 
     public boolean validatePasswordResetToken(String token) {
         String userName = jwtTokenUtil.getUsernameFromToken(token);
-        User savedUser = userRepository.findByEmailAddress(userName);
+        User savedUser = userRepository.findByEmailAddressAndDeletedFalse(userName);
 
         if (savedUser != null) {
             JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(savedUser.getEmailAddress());

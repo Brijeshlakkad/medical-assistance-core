@@ -47,6 +47,8 @@ public class User {
 
     private Date modifiedAt;
 
+    private boolean deleted = false;
+
     public String getUserId() {
         return userId;
     }
@@ -173,5 +175,13 @@ public class User {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

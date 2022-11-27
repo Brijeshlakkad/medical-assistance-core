@@ -1,22 +1,22 @@
 package com.medicalassistance.core.response;
 
-public class AdminDoctorCard {
-    UserCardResponse doctor;
-    Integer currentPatients;
+import java.time.ZonedDateTime;
 
-    public UserCardResponse getDoctor() {
-        return doctor;
+public class AdminDoctorCard extends UserCardResponse {
+    ZonedDateTime createdAt;
+
+    public AdminDoctorCard(UserCardResponse userCardResponse) {
+        this.setFullName(userCardResponse.getFullName());
+        this.setEmailAddress(userCardResponse.getEmailAddress());
+        this.setPhoneNumber(userCardResponse.getPhoneNumber());
+        this.setRegistrationNumber(userCardResponse.getRegistrationNumber());
     }
 
-    public void setDoctor(UserCardResponse doctor) {
-        this.doctor = doctor;
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public Integer getCurrentPatients() {
-        return currentPatients;
-    }
-
-    public void setCurrentPatients(Integer currentPatients) {
-        this.currentPatients = currentPatients;
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

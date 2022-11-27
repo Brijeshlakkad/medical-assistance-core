@@ -18,7 +18,7 @@ public class ActivePatientMapper {
     public PatientRecordCardResponse toPatientRecordCardResponse(ActivePatient activePatient) {
         PatientRecordCardResponse cardResponse = new PatientRecordCardResponse();
         cardResponse.setPatientRecordId(activePatient.getPatientRecordId());
-        cardResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserId(activePatient.getPatientId())));
+        cardResponse.setPatient(userMapper.toUserCardResponse(userRepository.findByUserIdAndDeletedFalse(activePatient.getPatientId())));
         cardResponse.setAssessmentCreatedAt(activePatient.getCreatedAt());
         return cardResponse;
     }

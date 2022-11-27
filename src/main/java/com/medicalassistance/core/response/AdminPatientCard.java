@@ -2,23 +2,21 @@ package com.medicalassistance.core.response;
 
 import java.time.ZonedDateTime;
 
-public class AdminPatientCard {
-    UserCardResponse patient;
-    ZonedDateTime assessmentCreatedAt;
+public class AdminPatientCard extends UserCardResponse {
+    ZonedDateTime createdAt;
 
-    public UserCardResponse getPatient() {
-        return patient;
+    public AdminPatientCard(UserCardResponse userCardResponse){
+        this.setFullName(userCardResponse.getFullName());
+        this.setEmailAddress(userCardResponse.getEmailAddress());
+        this.setPhoneNumber(userCardResponse.getPhoneNumber());
+        this.setRegistrationNumber(userCardResponse.getRegistrationNumber());
     }
 
-    public void setPatient(UserCardResponse patient) {
-        this.patient = patient;
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public ZonedDateTime getAssessmentCreatedAt() {
-        return assessmentCreatedAt;
-    }
-
-    public void setAssessmentCreatedAt(ZonedDateTime assessmentCreatedAt) {
-        this.assessmentCreatedAt = assessmentCreatedAt;
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
