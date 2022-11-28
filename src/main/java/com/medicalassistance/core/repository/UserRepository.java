@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public interface UserRepository extends MongoRepository<User, String> {
@@ -23,7 +24,11 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Page<User> findByAuthoritiesContainsAndDeletedFalseOrderByModifiedAt(AuthorityName authorities, Pageable pageable);
 
-    Page<User> findByAuthoritiesContainsAndCreatedAtBetweenAndDeletedFalseOrderByCreatedAt(Set<AuthorityName> authorities, Date createdAt, Date createdAt2, Pageable pageable);
+    List<User> findByAuthoritiesContainsAndCreatedAtBetweenAndDeletedFalseOrderByCreatedAt(Set<AuthorityName> authorities, Date createdAt, Date createdAt2);
+
+    List<User> findByAuthoritiesContainsAndCreatedAtAndDeletedFalseOrderByCreatedAt(Set<AuthorityName> authorities, Date createdAt);
+
+    Integer countByAuthoritiesContains(Set<AuthorityName> authorities);
 
     boolean existsByRegistrationNumberAndDeletedFalse(String registrationNumber);
 

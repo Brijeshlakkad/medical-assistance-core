@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -107,29 +109,27 @@ public class AdminService {
         }
     }
 
-    public AdminPatientReport getAdminPatientReport(Date startDateTime, Date endDateTime, Pageable pageable) {
-        //        Date currentWeekStart, currentWeekEnd;
-        //        Calendar currentCalendar = Calendar.getInstance();
-        //        currentCalendar.setFirstDayOfWeek(Calendar.MONDAY);
-        //        while (currentCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-        //            currentCalendar.add(Calendar.DATE, -1);   //go one day before
-        //        }
-        //        currentWeekStart = currentCalendar.getTime();
-        //        ZonedDateTime weekStartDateTime = ZonedDateTime.ofInstant(currentWeekStart.toInstant(), ZoneOffset.UTC);
-        //
-        //        currentCalendar.add(Calendar.DATE, 6);    //add 6 days after Monday
-        //        currentWeekEnd = currentCalendar.getTime();
-        //        ZonedDateTime weekEndDateTime = ZonedDateTime.ofInstant(currentWeekEnd.toInstant(), ZoneOffset.UTC);
-
+    public AdminPatientReport getAdminPatientReportByRange(Date startDateTime, Date endDateTime) {
         AdminPatientReport report = new AdminPatientReport();
-        Page<User> patientCardPage = userRepository.findByAuthoritiesContainsAndCreatedAtBetweenAndDeletedFalseOrderByCreatedAt
+        List<User> patientCardPage = userRepository.findByAuthoritiesContainsAndCreatedAtBetweenAndDeletedFalseOrderByCreatedAt
                 (Collections.singleton(AuthorityName.ROLE_PATIENT),
                         startDateTime,
-                        endDateTime,
-                        pageable);
-        report.setPatients(patientCardPage.map(userMapper::toAdminPatientCard));
+                        endDateTime);
+        report.setPatients(patientCardPage.stream().map(userMapper::toAdminPatientCard).collect(Collectors.toList()));
         report.setNumAttemptedAssessment(activePatientRepository.countBy());
-        report.setNumTotal(patientCardPage.getTotalElements());
+        report.setNumTotal(patientCardPage.size());
+        report.setNumHasCounselorAppointment(counselorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC()));
+        Integer numHasDoctorAppointment = doctorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC());
+        report.setNumHasDoctorAppointment(numHasDoctorAppointment);
+        report.setNumInProcessingDoctorAppointment(assignedPatientRepository.countBy() - numHasDoctorAppointment);
+        return report;
+    }
+
+    public AdminPatientReportParameters getAdminPatientReportParameters() {
+        AdminPatientReportParameters report = new AdminPatientReportParameters();
+        Integer totalUsers = userRepository.countByAuthoritiesContains(Collections.singleton(AuthorityName.ROLE_PATIENT));
+        report.setNumAttemptedAssessment(activePatientRepository.countBy());
+        report.setNumTotal(totalUsers);
         report.setNumHasCounselorAppointment(counselorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC()));
         Integer numHasDoctorAppointment = doctorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC());
         report.setNumHasDoctorAppointment(numHasDoctorAppointment);

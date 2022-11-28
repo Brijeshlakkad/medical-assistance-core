@@ -78,14 +78,15 @@ public class AdminController {
 
     @RequestMapping(value = "/report", method = RequestMethod.GET)
     public AdminPatientReport getAdminPatientReport(@RequestParam Long startDateTime,
-                                                    @RequestParam Long endDateTime,
-                                                    @RequestParam(defaultValue = "0") Integer page,
-                                                    @RequestParam(defaultValue = "10") Integer size) {
-        Pageable paging = PageRequest.of(page, size);
-        return adminService.getAdminPatientReport(
+                                                    @RequestParam Long endDateTime) {
+        return adminService.getAdminPatientReportByRange(
                 new Date(startDateTime),
-                new Date(endDateTime),
-                paging);
+                new Date(endDateTime));
+    }
+
+    @RequestMapping(value = "/report-parameters", method = RequestMethod.GET)
+    public AdminPatientReportParameters getAdminPatientReportParameters() {
+        return adminService.getAdminPatientReportParameters();
     }
 
     @RequestMapping(value = "/patient/{email}", method = RequestMethod.DELETE)
