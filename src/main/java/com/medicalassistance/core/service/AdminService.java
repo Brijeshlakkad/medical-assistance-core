@@ -96,6 +96,7 @@ public class AdminService {
 
     private AdminUserCreateResponse createUser(UserRequest userRequest, AuthorityName authorityName) {
         userRequest.setPassword(UserUtil.generateRandomPassword());
+        System.out.println("Password: " + userRequest.getPassword());
         LoginResponse loginResponse = baseService.signUp(userRequest, authorityName, true);
         AdminUserCreateResponse response = new AdminUserCreateResponse();
         response.setSuccess(loginResponse.isLoginSuccess());
