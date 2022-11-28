@@ -5,9 +5,7 @@ import java.time.ZonedDateTime;
 public class UserRequest {
     private String fullName;
 
-    private String addressLine1;
-
-    private String addressLine2;
+    private String addressLine;
 
     private String city;
 
@@ -33,20 +31,12 @@ public class UserRequest {
         this.fullName = fullName;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public String getAddressLine() {
+        return addressLine;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
-    }
-
-    public String getAddressLine2() {
-        return addressLine2;
-    }
-
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
     }
 
     public String getCity() {

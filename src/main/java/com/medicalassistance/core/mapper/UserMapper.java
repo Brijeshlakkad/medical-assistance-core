@@ -42,7 +42,7 @@ public class UserMapper {
         user.setFullName(userRequest.getFullName());
         user.setEmailAddress(userRequest.getEmailAddress());
         user.setPassword(userRequest.getPassword());
-        user.setAddressLine(userRequest.getAddressLine1());
+        user.setAddressLine(userRequest.getAddressLine());
         user.setCity(userRequest.getCity());
         user.setProvince(userRequest.getProvince());
         user.setCountry(userRequest.getCountry());
