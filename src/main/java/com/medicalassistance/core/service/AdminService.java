@@ -14,7 +14,6 @@ import com.medicalassistance.core.request.DummyUsers;
 import com.medicalassistance.core.request.UserRequest;
 import com.medicalassistance.core.response.*;
 import com.medicalassistance.core.util.EncryptionUtil;
-import com.medicalassistance.core.util.TimeUtil;
 import com.medicalassistance.core.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,6 +59,9 @@ public class AdminService {
 
     @Autowired
     private PatientRecordService patientRecordService;
+
+    @Autowired
+    private PatientRecordRepository patientRecordRepository;
 
     public void createAssessment(Assessment assessment) {
         assessmentRepository.save(assessment);
@@ -131,12 +133,12 @@ public class AdminService {
                         startDateTime,
                         endDateTime);
         report.setPatients(patientCardPage.stream().map(userMapper::toAdminPatientCard).collect(Collectors.toList()));
-        report.setNumAttemptedAssessment(activePatientRepository.countBy());
+        report.setNumAttemptedAssessment(activePatientRepository.countByCreatedAtBetween(startDateTime, endDateTime));
         report.setNumTotal(patientCardPage.size());
-        report.setNumHasCounselorAppointment(counselorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC()));
-        Integer numHasDoctorAppointment = doctorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC());
+        report.setNumHasCounselorAppointment(counselorAppointmentRepository.countByStartDateTimeBetween(startDateTime, endDateTime));
+        Integer numHasDoctorAppointment = doctorAppointmentRepository.countByStartDateTimeBetween(startDateTime, endDateTime);
         report.setNumHasDoctorAppointment(numHasDoctorAppointment);
-        report.setNumInProcessingDoctorAppointment(assignedPatientRepository.countBy() - numHasDoctorAppointment);
+        report.setNumInProcessingDoctorAppointment(assignedPatientRepository.countByCreatedAtBetween(startDateTime, endDateTime) - numHasDoctorAppointment);
         return report;
     }
 
@@ -145,8 +147,8 @@ public class AdminService {
         Integer totalUsers = userRepository.countByAuthoritiesContains(Collections.singleton(AuthorityName.ROLE_PATIENT));
         report.setNumAttemptedAssessment(activePatientRepository.countBy());
         report.setNumTotal(totalUsers);
-        report.setNumHasCounselorAppointment(counselorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC()));
-        Integer numHasDoctorAppointment = doctorAppointmentRepository.countByStartDateTimeAfter(TimeUtil.nowUTC());
+        report.setNumHasCounselorAppointment(counselorAppointmentRepository.countBy());
+        Integer numHasDoctorAppointment = doctorAppointmentRepository.countBy();
         report.setNumHasDoctorAppointment(numHasDoctorAppointment);
         report.setNumInProcessingDoctorAppointment(assignedPatientRepository.countBy() - numHasDoctorAppointment);
         return report;
@@ -201,6 +203,8 @@ public class AdminService {
 
             // store the assessment result
             assessmentResult.setAssessmentId("635b203cf4d8b811f7a0ac0b");
+            assessmentResult.setCreatedAt(patient.getCreatedAt());
+            assessmentResult.setUpdatedAt(patient.getUpdatedAt());
             AssessmentResultRequest resultRequest = createAssessmentResultRequest();
             List<AttemptedQuestion> attemptedQuestions = new ArrayList<>();
             for (int j = 0; j < resultRequest.getQuestions().size(); j++) {
@@ -212,7 +216,25 @@ public class AdminService {
             assessmentResult = assessmentResultRepository.save(assessmentResult);
 
             // create patient record and active patient record.
-            patientRecords.add(patientRecordService.afterAssessment(assessmentResult));
+            // store the patient record
+            PatientRecord patientRecord = new PatientRecord();
+            patientRecord.setCreatedAt(patient.getCreatedAt());
+            patientRecord.setUpdatedAt(patient.getUpdatedAt());
+            patientRecord.setAssessmentResultId(assessmentResult.getAssessmentResultId());
+            patientRecord.setPatientId(assessmentResult.getPatientId());
+            patientRecord.setStatus(PatientRecordStatus.COUNSELOR_IN_PROGRESS);
+            patientRecord = patientRecordRepository.save(patientRecord);
+
+            // create an active patient record
+            ActivePatient activePatient = new ActivePatient();
+            activePatient.setCreatedAt(patient.getCreatedAt());
+            activePatient.setUpdatedAt(patient.getUpdatedAt());
+            activePatient.setPatientId(assessmentResult.getPatientId());
+            activePatient.setPatientRecordId(patientRecord.getPatientRecordId());
+            activePatient = activePatientRepository.save(activePatient);
+
+            patientRecord.setActivePatientId(activePatient.getActivePatientId());
+            patientRecords.add(patientRecordRepository.save(patientRecord));
         }
 
         int counselorIndex = 0;
@@ -223,6 +245,8 @@ public class AdminService {
             PatientRecord patientRecord = patientRecords.get(i);
             // save counselor appointment
             CounselorAppointment counselorAppointment = new CounselorAppointment();
+            counselorAppointment.setCreatedAt(counselor.getCreatedAt());
+            counselorAppointment.setUpdatedAt(counselor.getUpdatedAt());
             counselorAppointment.setCounselorId(counselor.getUserId());
             counselorAppointment.setPatientRecordId(patientRecord.getPatientRecordId());
             counselorAppointment.setStartDateTime(createdAt);
@@ -252,6 +276,8 @@ public class AdminService {
 
             // save assigned patient record
             AssignedPatient assignedPatient = new AssignedPatient();
+            assignedPatient.setCreatedAt(counselor.getCreatedAt());
+            assignedPatient.setUpdatedAt(counselor.getUpdatedAt());
             assignedPatient.setPatientRecordId(patientRecord.getPatientRecordId());
             assignedPatient.setDoctorRegistrationNumber(doctor.getRegistrationNumber());
             assignedPatient.setCounselorRegistrationNumber(counselor.getRegistrationNumber());
@@ -270,6 +296,8 @@ public class AdminService {
             PatientRecord patientRecord = patientRecords.get(i);
             // save counselor appointment
             DoctorAppointment doctorAppointment = new DoctorAppointment();
+            doctorAppointment.setCreatedAt(doctor.getCreatedAt());
+            doctorAppointment.setUpdatedAt(doctor.getUpdatedAt());
             doctorAppointment.setDoctorId(doctor.getUserId());
             doctorAppointment.setPatientRecordId(patientRecord.getPatientRecordId());
             doctorAppointment.setStartDateTime(createdAt);
