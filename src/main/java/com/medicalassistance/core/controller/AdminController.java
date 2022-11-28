@@ -1,7 +1,9 @@
 package com.medicalassistance.core.controller;
 
 import com.medicalassistance.core.common.AuthorityName;
+import com.medicalassistance.core.converter.ZonedDateTimeReadConverter;
 import com.medicalassistance.core.entity.Assessment;
+import com.medicalassistance.core.request.DummyUsers;
 import com.medicalassistance.core.request.LoginRequest;
 import com.medicalassistance.core.request.UserRequest;
 import com.medicalassistance.core.response.*;
@@ -15,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @RestController
 @CrossOrigin
@@ -29,6 +30,9 @@ public class AdminController {
 
     @Autowired
     private BaseService baseService;
+
+    @Autowired
+    private ZonedDateTimeReadConverter zonedDateTimeReadConverter;
 
     @RequestMapping(value = "/assessment", method = RequestMethod.POST)
     public void createAssessment(@Valid @RequestBody Assessment assessment) {
@@ -80,8 +84,8 @@ public class AdminController {
     public AdminPatientReport getAdminPatientReport(@RequestParam Long startDateTime,
                                                     @RequestParam Long endDateTime) {
         return adminService.getAdminPatientReportByRange(
-                new Date(startDateTime),
-                new Date(endDateTime));
+                zonedDateTimeReadConverter.convert(startDateTime),
+                zonedDateTimeReadConverter.convert(endDateTime));
     }
 
     @RequestMapping(value = "/report-parameters", method = RequestMethod.GET)
@@ -107,5 +111,10 @@ public class AdminController {
     @RequestMapping(value = "/reset", method = RequestMethod.DELETE)
     public void resetUsers() {
         adminService.resetUsers();
+    }
+
+    @RequestMapping(value = "/dummy", method = RequestMethod.POST)
+    public void dummyData(@Valid @RequestBody DummyUsers dummyUsers) {
+        adminService.insertDummyUsers(dummyUsers);
     }
 }

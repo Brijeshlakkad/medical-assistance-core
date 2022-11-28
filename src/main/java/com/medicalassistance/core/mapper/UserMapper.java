@@ -110,19 +110,19 @@ public class UserMapper {
 
     public AdminPatientCard toAdminPatientCard(User user) {
         AdminPatientCard adminPatientCard = new AdminPatientCard(toUserCardResponse(user));
-        adminPatientCard.setCreatedAt(readConverter.convert(user.getCreatedAt().getTime()));
+        adminPatientCard.setCreatedAt(user.getCreatedAt());
         return adminPatientCard;
     }
 
     public AdminCounselorCard toAdminCounselorCard(User user) {
         AdminCounselorCard adminCounselorCard = new AdminCounselorCard(toUserCardResponse(user));
-        adminCounselorCard.setCreatedAt(readConverter.convert(user.getCreatedAt().getTime()));
+        adminCounselorCard.setCreatedAt(user.getCreatedAt());
         return adminCounselorCard;
     }
 
     public AdminDoctorCard toAdminDoctorCard(User user) {
         AdminDoctorCard adminDoctorCard = new AdminDoctorCard(toUserCardResponse(user));
-        adminDoctorCard.setCreatedAt(readConverter.convert(user.getCreatedAt().getTime()));
+        adminDoctorCard.setCreatedAt(user.getCreatedAt());
         return adminDoctorCard;
     }
 }

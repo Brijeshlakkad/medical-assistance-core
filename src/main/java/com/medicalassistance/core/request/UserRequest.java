@@ -1,6 +1,6 @@
 package com.medicalassistance.core.request;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class UserRequest {
     private String fullName;
@@ -15,7 +15,7 @@ public class UserRequest {
 
     private String country;
 
-    private Date dateOfBirth;
+    private ZonedDateTime dateOfBirth;
 
     private String phoneNumber;
 
@@ -73,11 +73,11 @@ public class UserRequest {
         this.country = country;
     }
 
-    public Date getDateOfBirth() {
+    public ZonedDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(ZonedDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

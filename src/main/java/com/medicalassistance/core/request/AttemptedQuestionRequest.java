@@ -4,6 +4,14 @@ public class AttemptedQuestionRequest {
     String questionId;
     int answer;
 
+    public AttemptedQuestionRequest() {
+    }
+
+    public AttemptedQuestionRequest(String questionId, int answer) {
+        this.questionId = questionId;
+        this.answer = answer;
+    }
+
     public String getQuestionId() {
         return questionId;
     }
