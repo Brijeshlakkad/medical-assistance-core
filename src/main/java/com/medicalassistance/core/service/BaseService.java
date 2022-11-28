@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -45,7 +46,7 @@ public class BaseService {
         if (request == null) {
             return createErrorLoginResponse();
         }
-        User savedUser = userRepository.findByEmailAddressAndDeletedFalse(request.getEmailId());
+        User savedUser = userRepository.findByEmailAddressAndDeletedFalse(request.getEmailId().toLowerCase(Locale.ROOT));
         if (savedUser != null && savedUser.getAuthorities().contains(authorityName)) {
             if (checkValidLogin(savedUser, request.getPassword())) {
                 return this.createSuccessLoginResponse(savedUser);

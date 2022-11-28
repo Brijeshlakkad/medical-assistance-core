@@ -1,5 +1,7 @@
 package com.medicalassistance.core.request;
 
+import java.util.Locale;
+
 public class LoginRequest {
     String emailId;
     String password;
@@ -12,7 +14,8 @@ public class LoginRequest {
     }
 
     public void setEmailId(String emailId) {
-        this.emailId = emailId;
+        if (emailId != null && !emailId.isEmpty())
+            this.emailId = emailId.toLowerCase(Locale.ROOT);
     }
 
     public String getPassword() {

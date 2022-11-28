@@ -1,6 +1,7 @@
 package com.medicalassistance.core.request;
 
 import java.time.ZonedDateTime;
+import java.util.Locale;
 
 public class UserRequest {
     private String fullName;
@@ -84,7 +85,8 @@ public class UserRequest {
     }
 
     public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+        if (emailAddress != null && !emailAddress.isEmpty())
+            this.emailAddress = emailAddress.toLowerCase(Locale.ROOT);
     }
 
     public String getPassword() {
