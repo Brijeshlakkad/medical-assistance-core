@@ -65,6 +65,20 @@ public class UserMapper {
         return response;
     }
 
+    public UserProfileResponse toUserProfileResponse(User user) {
+        UserProfileResponse response = new UserProfileResponse();
+        response.setFullName(user.getFullName());
+        response.setEmailAddress(user.getEmailAddress());
+        response.setAddressLine(user.getAddressLine());
+        response.setCity(user.getCity());
+        response.setProvince(user.getProvince());
+        response.setCountry(user.getCountry());
+        response.setPhoneNumber(user.getPhoneNumber());
+        response.setDateOfBirth(user.getDateOfBirth());
+        response.setRegistrationNumber(user.getRegistrationNumber());
+        return response;
+    }
+
     public UserCardResponse toUserCardResponse(User user) {
         UserCardResponse response = new UserCardResponse();
         response.setFullName(user.getFullName());

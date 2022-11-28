@@ -5,7 +5,7 @@ import com.medicalassistance.core.entity.User;
 import com.medicalassistance.core.mapper.UserMapper;
 import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.UserUpdateRequest;
-import com.medicalassistance.core.response.UserResponse;
+import com.medicalassistance.core.response.UserProfileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +20,13 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public UserResponse getProfileCard() {
+    public UserProfileResponse getProfileCard() {
         User user = userCommonService.getUser();
-        return userMapper.toUserResponse(user);
+        return userMapper.toUserProfileResponse(user);
     }
 
-    public UserResponse updateProfile(UserUpdateRequest userUpdateRequest) {
+    public UserProfileResponse updateProfile(UserUpdateRequest userUpdateRequest) {
         User updatedUser = userMapper.fromUserUpdateRequest(userUpdateRequest);
-        return userMapper.toUserResponse(userRepository.save(updatedUser));
+        return userMapper.toUserProfileResponse(userRepository.save(updatedUser));
     }
 }
