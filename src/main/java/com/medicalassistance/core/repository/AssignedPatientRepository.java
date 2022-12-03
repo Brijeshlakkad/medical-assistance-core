@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.time.ZonedDateTime;
 
 public interface AssignedPatientRepository extends MongoRepository<AssignedPatient, String> {
-    Page<AssignedPatient> findByDoctorRegistrationNumber(String doctorRegistrationNumber, Pageable pageable);
+    Page<AssignedPatient> findByDoctorRegistrationNumberOrderByCreatedAtDesc(String doctorRegistrationNumber, Pageable pageable);
 
     boolean existsByPatientRecordId(String patientRecordId);
 

@@ -10,9 +10,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppointment, String> {
-    Page<DoctorAppointment> findByDoctorIdAndStartDateTimeGreaterThanEqual(String doctorId, ZonedDateTime date, Pageable pageable);
+    Page<DoctorAppointment> findByDoctorIdAndStartDateTimeGreaterThanEqualOrderByCreatedAtDesc(String doctorId, ZonedDateTime date, Pageable pageable);
 
-    List<AppointmentListForDateResponse> findByDoctorIdAndStartDateTimeBetween(String counselorId, ZonedDateTime startDate, ZonedDateTime endDate);
+    List<AppointmentListForDateResponse> findByDoctorIdAndStartDateTimeBetweenOrderByCreatedAtDesc(String counselorId, ZonedDateTime startDate, ZonedDateTime endDate);
 
     boolean existsByDoctorIdAndStartDateTimeBetweenOrStartDateTimeEquals(
             String doctorId, ZonedDateTime startDateTime, ZonedDateTime endDateTime, ZonedDateTime startDateTimeE);

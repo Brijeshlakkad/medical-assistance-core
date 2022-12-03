@@ -98,7 +98,7 @@ public class CounselorService {
     public Page<AppointmentResponse> getCounselorAppointments(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), TimeUtil.nowUTC(), pageable);
+        Page<CounselorAppointment> pages = appointmentRepository.findByCounselorIdAndStartDateTimeGreaterThanEqualOrderByCreatedAtDesc(user.getUserId(), TimeUtil.nowUTC(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
     }
@@ -109,7 +109,7 @@ public class CounselorService {
         }
         User user = userCommonService.getUser();
 
-        return appointmentRepository.findByCounselorIdAndStartDateTimeBetween(user.getUserId(), request.getDate(), request.getDate().plusDays(1));
+        return appointmentRepository.findByCounselorIdAndStartDateTimeBetweenOrderByCreatedAtDesc(user.getUserId(), request.getDate(), request.getDate().plusDays(1));
     }
 
     public Page<CounselorDoctorCardResponse> getDoctorPage(Pageable pageable) {

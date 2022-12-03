@@ -103,7 +103,7 @@ public class DoctorService {
     public Page<AppointmentResponse> getDoctorAppointments(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<DoctorAppointment> pages = appointmentRepository.findByDoctorIdAndStartDateTimeGreaterThanEqual(user.getUserId(), TimeUtil.nowUTC(), pageable);
+        Page<DoctorAppointment> pages = appointmentRepository.findByDoctorIdAndStartDateTimeGreaterThanEqualOrderByCreatedAtDesc(user.getUserId(), TimeUtil.nowUTC(), pageable);
 
         return pages.map(appointmentMapper::toAppointmentResponse);
     }
@@ -114,13 +114,13 @@ public class DoctorService {
         }
         User user = userCommonService.getUser();
 
-        return appointmentRepository.findByDoctorIdAndStartDateTimeBetween(user.getUserId(), request.getDate(), request.getDate().plusDays(1));
+        return appointmentRepository.findByDoctorIdAndStartDateTimeBetweenOrderByCreatedAtDesc(user.getUserId(), request.getDate(), request.getDate().plusDays(1));
     }
 
     public Page<AssignedPatientResponse> getAssignedPatients(Pageable pageable) {
         User user = userCommonService.getUser();
 
-        Page<AssignedPatient> assignedPatientPage = assignedPatientRepository.findByDoctorRegistrationNumber(user.getRegistrationNumber(), pageable);
+        Page<AssignedPatient> assignedPatientPage = assignedPatientRepository.findByDoctorRegistrationNumberOrderByCreatedAtDesc(user.getRegistrationNumber(), pageable);
 
         return assignedPatientPage.map(assignedPatientMapper::toAssignedPatientResponse);
     }
