@@ -46,6 +46,7 @@ public class AppointmentMapper {
     public DoctorAppointment fromAppointmentRequestToDoctorAppointment(AppointmentRequest appointmentRequest) {
         User user = userCommonService.getUser();
         DoctorAppointment doctorAppointment = new DoctorAppointment();
+        doctorAppointment.setPatientId(user.getUserId());
         doctorAppointment.setStartDateTime(appointmentRequest.getStartDateTime());
         doctorAppointment.setEndDateTime(appointmentRequest.getEndDateTime());
         doctorAppointment.setDoctorId(user.getUserId());
@@ -56,6 +57,7 @@ public class AppointmentMapper {
     public CounselorAppointment fromAppointmentRequestToCounselorAppointment(AppointmentRequest appointmentRequest) {
         User user = userCommonService.getUser();
         CounselorAppointment counselorAppointment = new CounselorAppointment();
+        counselorAppointment.setPatientId(user.getUserId());
         counselorAppointment.setStartDateTime(appointmentRequest.getStartDateTime());
         counselorAppointment.setEndDateTime(appointmentRequest.getEndDateTime());
         counselorAppointment.setCounselorId(user.getUserId());

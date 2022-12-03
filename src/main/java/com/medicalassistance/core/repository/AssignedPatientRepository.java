@@ -19,4 +19,8 @@ public interface AssignedPatientRepository extends MongoRepository<AssignedPatie
     Integer countByCreatedAtBetween(ZonedDateTime startDateTime, ZonedDateTime endDateTime);
 
     Integer countBy();
+
+    void deleteByPatientId(String patientId);
+
+    void deleteByDoctorRegistrationNumber(String doctorRegistrationNumber);
 }

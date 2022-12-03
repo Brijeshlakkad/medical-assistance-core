@@ -31,4 +31,8 @@ public interface CounselorAppointmentRepository extends MongoRepository<Counselo
     Integer countByStartDateTimeBetween(ZonedDateTime startDateTime, ZonedDateTime endDateTime);
 
     Integer countBy();
+
+    void deleteByPatientId(String patientId);
+
+    void deleteByCounselorId(String counselorId);
 }

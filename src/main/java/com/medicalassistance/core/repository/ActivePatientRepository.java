@@ -23,4 +23,6 @@ public interface ActivePatientRepository extends MongoRepository<ActivePatient, 
     Integer countBy();
 
     Integer countByCreatedAtBetween(ZonedDateTime startDateTime, ZonedDateTime endDateTime);
+
+    void deleteByPatientId(String patientId);
 }

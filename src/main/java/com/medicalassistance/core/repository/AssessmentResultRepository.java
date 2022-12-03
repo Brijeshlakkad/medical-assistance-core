@@ -9,4 +9,6 @@ public interface AssessmentResultRepository extends MongoRepository<AssessmentRe
     AssessmentResult findByAssessmentResultId(String assessmentResultId);
 
     List<AssessmentResult> findByPatientId(String patientId);
+
+    void deleteByPatientId(String patientId);
 }

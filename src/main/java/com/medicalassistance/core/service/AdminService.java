@@ -119,6 +119,21 @@ public class AdminService {
 
     private void removeUser(String emailAddress, AuthorityName authorityName) {
         User user = userRepository.findByEmailAddressAndAuthoritiesContainsAndDeletedFalse(emailAddress, Collections.singleton(authorityName));
+        if (authorityName == AuthorityName.ROLE_PATIENT) {
+            activePatientRepository.deleteByPatientId(user.getUserId());
+            assessmentResultRepository.deleteByPatientId(user.getUserId());
+            assignedPatientRepository.deleteByPatientId(user.getUserId());
+            counselorAppointmentRepository.deleteByPatientId(user.getUserId());
+            doctorAppointmentRepository.deleteByPatientId(user.getUserId());
+            patientRecordRepository.deleteByPatientId(user.getUserId());
+        }
+        if (authorityName == AuthorityName.ROLE_COUNSELOR) {
+            counselorAppointmentRepository.deleteByCounselorId(user.getUserId());
+        }
+        if (authorityName == AuthorityName.ROLE_DOCTOR) {
+            assignedPatientRepository.deleteByDoctorRegistrationNumber(user.getRegistrationNumber());
+            doctorAppointmentRepository.deleteByDoctorId(user.getUserId());
+        }
         if (user != null) {
             user.setDeleted(true);
             userRepository.save(user);
