@@ -142,7 +142,7 @@ public class DoctorService {
             assignedPatientRepository.deleteById(patientRecord.getAssignedPatientId());
 
             if (patientRecord.getAppointmentId() != null &&
-                    patientRecord.getStatus() == PatientRecordStatus.COUNSELOR_APPOINTMENT) {
+                    patientRecord.getStatus() == PatientRecordStatus.DOCTOR_APPOINTMENT) {
                 // delete doctor appointment
                 appointmentRepository.deleteByAppointmentId(patientRecord.getAppointmentId());
             }
