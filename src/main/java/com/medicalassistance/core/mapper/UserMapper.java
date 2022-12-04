@@ -12,6 +12,7 @@ import com.medicalassistance.core.repository.UserRepository;
 import com.medicalassistance.core.request.UserRequest;
 import com.medicalassistance.core.request.UserUpdateRequest;
 import com.medicalassistance.core.response.*;
+import com.medicalassistance.core.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +62,7 @@ public class UserMapper {
         response.setProvince(user.getProvince());
         response.setCountry(user.getCountry());
         response.setPhoneNumber(user.getPhoneNumber());
-        response.setAge((new Date()).getYear() - user.getDateOfBirth().getYear());
+        response.setAge(TimeUtil.nowUTC().getYear() - user.getDateOfBirth().getYear());
         return response;
     }
 
