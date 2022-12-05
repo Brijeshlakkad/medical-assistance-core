@@ -42,6 +42,9 @@ public class BaseService {
     @Autowired
     private UserCommonService userCommonService;
 
+    @Autowired
+    private PatientService patientService;
+
     public LoginResponse login(LoginRequest request, AuthorityName authorityName) {
         if (request == null) {
             return createErrorLoginResponse();
@@ -132,6 +135,7 @@ public class BaseService {
     public LoginResponse createSuccessLoginResponse(User savedUser) {
         LoginResponse response = new LoginResponse();
         response.setUser(userMapper.toUserResponse(savedUser));
+        response.setStatus(patientService.getPatientRecordStatus(savedUser));
         response.setLoginSuccess(true);
         JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(savedUser.getEmailAddress());
         response.setAccessToken(jwtTokenUtil.generateToken(userDetails));

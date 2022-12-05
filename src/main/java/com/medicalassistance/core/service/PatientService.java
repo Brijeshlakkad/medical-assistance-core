@@ -1,5 +1,6 @@
 package com.medicalassistance.core.service;
 
+import com.medicalassistance.core.common.AuthorityName;
 import com.medicalassistance.core.common.PatientRecordStatus;
 import com.medicalassistance.core.common.UserCommonService;
 import com.medicalassistance.core.entity.*;
@@ -71,11 +72,19 @@ public class PatientService {
     }
 
     public PatientRecordStatusResponse getPatientRecordStatus() {
-        String patientId = userCommonService.getUser().getUserId();
+        User user = userCommonService.getUser();
+        return getPatientRecordStatus(user);
+    }
+
+    public PatientRecordStatusResponse getPatientRecordStatus(User user) {
         PatientRecordStatusResponse patientRecordStatusResponse = new PatientRecordStatusResponse();
+        patientRecordStatusResponse.setPatientRecordStatus(PatientRecordStatus.NULL);
+        if (!user.getAuthorities().contains(AuthorityName.ROLE_PATIENT)) {
+            return patientRecordStatusResponse;
+        }
+        String patientId = user.getUserId();
         PatientRecord patientRecord = patientRecordRepository.findTop1ByPatientIdOrderByCreatedAtDesc(patientId);
         if (patientRecord == null) {
-            patientRecordStatusResponse.setPatientRecordStatus(PatientRecordStatus.NULL);
             return patientRecordStatusResponse;
         }
         patientRecordStatusResponse.setPatientRecordStatus(patientRecord.getStatus());

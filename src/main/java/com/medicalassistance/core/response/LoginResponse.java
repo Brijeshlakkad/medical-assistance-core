@@ -5,6 +5,7 @@ public class LoginResponse {
     String accessToken;
     String errorMessage;
     UserResponse user;
+    PatientRecordStatusResponse status;
 
     public LoginResponse() {
 
@@ -55,5 +56,13 @@ public class LoginResponse {
 
     public void setUser(UserResponse user) {
         this.user = user;
+    }
+
+    public PatientRecordStatusResponse getStatus() {
+        return status;
+    }
+
+    public void setStatus(PatientRecordStatusResponse status) {
+        this.status = status;
     }
 }
