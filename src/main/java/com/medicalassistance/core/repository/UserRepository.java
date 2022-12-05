@@ -14,6 +14,8 @@ import java.util.Set;
 public interface UserRepository extends MongoRepository<User, String> {
     User findByUserIdAndDeletedFalse(String userId);
 
+    User findByEmailAddress(String emailAddress);
+
     User findByEmailAddressAndDeletedFalse(String emailAddress);
 
     User findByEmailAddressAndAuthoritiesContainsAndDeletedFalse(String emailAddress, Set<AuthorityName> authorityNames);

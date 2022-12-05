@@ -49,8 +49,11 @@ public class BaseService {
         if (request == null) {
             return createErrorLoginResponse();
         }
-        User savedUser = userRepository.findByEmailAddressAndDeletedFalse(request.getEmailId().toLowerCase(Locale.ROOT));
+        User savedUser = userRepository.findByEmailAddress(request.getEmailId().toLowerCase(Locale.ROOT));
         if (savedUser != null && savedUser.getAuthorities().contains(authorityName)) {
+            if (savedUser.isDeleted()) {
+                return this.createErrorLoginResponse("Your account was deleted! Please, contact administration!");
+            }
             if (checkValidLogin(savedUser, request.getPassword())) {
                 return this.createSuccessLoginResponse(savedUser);
             } else {
