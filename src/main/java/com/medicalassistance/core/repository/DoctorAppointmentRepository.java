@@ -1,5 +1,6 @@
 package com.medicalassistance.core.repository;
 
+import com.medicalassistance.core.entity.CounselorAppointment;
 import com.medicalassistance.core.entity.DoctorAppointment;
 import com.medicalassistance.core.response.AppointmentListForDateResponse;
 import org.springframework.data.domain.Page;
@@ -35,4 +36,6 @@ public interface DoctorAppointmentRepository extends MongoRepository<DoctorAppoi
     void deleteByPatientId(String patientId);
 
     void deleteByDoctorId(String doctorId);
+
+    List<DoctorAppointment> findByDoctorId(String counselorId);
 }

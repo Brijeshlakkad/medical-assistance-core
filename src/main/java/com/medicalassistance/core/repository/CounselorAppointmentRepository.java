@@ -35,4 +35,6 @@ public interface CounselorAppointmentRepository extends MongoRepository<Counselo
     void deleteByPatientId(String patientId);
 
     void deleteByCounselorId(String counselorId);
+
+    List<CounselorAppointment> findByCounselorId(String counselorId);
 }

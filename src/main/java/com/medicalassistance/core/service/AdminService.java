@@ -128,11 +128,41 @@ public class AdminService {
             patientRecordRepository.deleteByPatientId(user.getUserId());
         }
         if (authorityName == AuthorityName.ROLE_COUNSELOR) {
-            counselorAppointmentRepository.deleteByCounselorId(user.getUserId());
+            List<CounselorAppointment> appointments = counselorAppointmentRepository.findByCounselorId(user.getUserId());
+            for (CounselorAppointment appointment : appointments) {
+                List<PatientRecord> patientRecords = patientRecordRepository.findByAppointmentIdAndStatus(appointment.getAppointmentId(), PatientRecordStatus.COUNSELOR_APPOINTMENT);
+                patientRecords.forEach(patientRecord -> {
+                    if (patientRecord.getActivePatientId() != null)
+                        activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
+                    patientRecordRepository.deleteByPatientRecordId(patientRecord.getPatientRecordId());
+                });
+                patientRecords = patientRecordRepository.findByAppointmentIdAndStatus(appointment.getAppointmentId(), PatientRecordStatus.COUNSELOR_IN_PROGRESS);
+                patientRecords.forEach(patientRecord -> {
+                    if (patientRecord.getActivePatientId() != null)
+                        activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
+                    patientRecordRepository.deleteByPatientRecordId(patientRecord.getPatientRecordId());
+                });
+                counselorAppointmentRepository.deleteByAppointmentId(appointment.getAppointmentId());
+            }
         }
         if (authorityName == AuthorityName.ROLE_DOCTOR) {
+            List<DoctorAppointment> appointments = doctorAppointmentRepository.findByDoctorId(user.getUserId());
+            for (DoctorAppointment appointment : appointments) {
+                List<PatientRecord> patientRecords = patientRecordRepository.findByAppointmentIdAndStatus(appointment.getAppointmentId(), PatientRecordStatus.DOCTOR_APPOINTMENT);
+                patientRecords.forEach(patientRecord -> {
+                    if (patientRecord.getActivePatientId() != null)
+                        activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
+                    patientRecordRepository.deleteByPatientRecordId(patientRecord.getPatientRecordId());
+                });
+                patientRecords = patientRecordRepository.findByAppointmentIdAndStatus(appointment.getAppointmentId(), PatientRecordStatus.DOCTOR_IN_PROGRESS);
+                patientRecords.forEach(patientRecord -> {
+                    if (patientRecord.getActivePatientId() != null)
+                        activePatientRepository.deleteByActivePatientId(patientRecord.getActivePatientId());
+                    patientRecordRepository.deleteByPatientRecordId(patientRecord.getPatientRecordId());
+                });
+                doctorAppointmentRepository.deleteByAppointmentId(appointment.getAppointmentId());
+            }
             assignedPatientRepository.deleteByDoctorRegistrationNumber(user.getRegistrationNumber());
-            doctorAppointmentRepository.deleteByDoctorId(user.getUserId());
         }
         if (user != null) {
             user.setDeleted(true);
